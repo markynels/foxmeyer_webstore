@@ -1,9 +1,79 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "layout": "fox-meyer",
   "sections": {
     "fox-meyer-homepage": {
       "type": "fox-meyer-homepage",
-      "settings": {}
+      "settings": {
+        "shop_link": "shopify://collections/all",
+        "shop_button_label": "Shop",
+        "lang_link": "",
+        "lang_label": "FR",
+        "lang_code": "fr",
+        "hero_heading": "Coffee, exactly as it should be.",
+        "hero_subheading": "Nitrogen-sealed Specialty coffee · Roasted in Canada",
+        "scroll_cue_text": "Spin the can",
+        "freshness_eyebrow": "Freshness",
+        "freshness_heading": "Nitrogen-sealed at its peak.",
+        "freshness_copy": "Most bags are designed to catch your eye instead of preserving freshness. Fox Meyer is here to fix that. Competition-grade beans, small-batch roasted, then nitrogen-flushed in aluminum cans. We bring roast-day freshness, all the way to your cup.",
+        "freshness_chip_1": "150 g · Whole bean",
+        "freshness_chip_2": "Nitrogen-flushed",
+        "freshness_chip_3": "Recyclable aluminium",
+        "origin_eyebrow": "Fox Meyer Espresso Blend",
+        "origin_heading": "Brazil & Colombia.",
+        "origin_copy": "Competition-grade beans scoring SCA 86+, prepared in Canada in small batches. A medium-dark roast — velvety caramel, dark cocoa, toasted almond.",
+        "origin_chip_1": "SCA 86+",
+        "origin_chip_2": "Medium-dark",
+        "origin_chip_3": "Caramel · Cocoa · Almond",
+        "recipe_eyebrow": "The recipe",
+        "recipe_heading": "Espresso, dialed to the gram.",
+        "recipe_water_value": "90",
+        "recipe_water_unit": "°C",
+        "recipe_water_label": "Water",
+        "recipe_dose_value": "18",
+        "recipe_dose_unit": "g",
+        "recipe_dose_label": "Dose",
+        "recipe_yield_value": "36",
+        "recipe_yield_unit": "g",
+        "recipe_yield_label": "Yield",
+        "recipe_time_value": "32",
+        "recipe_time_unit": "s",
+        "recipe_time_label": "Time",
+        "recipe_note": "A starting recipe, not a rule.",
+        "grenouille_eyebrow": "Petite Grenouille Espresso Blend",
+        "grenouille_heading": "Brazil, India & guatemala.",
+        "grenouille_copy": "A second expression. The same nitrogen-sealed freshness and competition-grade sourcing Fox Meyer is known for — its own can, its own character. Petite Grenouille.",
+        "grenouille_chip_1": "SCA 86+",
+        "grenouille_chip_2": "Medium-dark",
+        "grenouille_chip_3": "Molasses · Cocoa · Almond · Walnut",
+        "cta_eyebrow": "Shop",
+        "cta_heading": "Freshness, delivered.",
+        "product_1_price": "$12.00",
+        "product_1_name": "Fox Meyer",
+        "product_1_unit": "CAD · 150 g / can",
+        "product_2_price": "$14.00",
+        "product_2_name": "Petite Grenouille",
+        "product_2_unit": "CAD · 150 g / can",
+        "tier_1_qty": "4+",
+        "tier_1_description": "Free shipping",
+        "tier_2_qty": "8+",
+        "tier_2_description": "Free shipping + limited-edition musette",
+        "cta_shop_label": "Shop now",
+        "subscribe_link": "",
+        "cta_subscribe_label": "Subscribe",
+        "footer_legal": "",
+        "footer_copyright": "© 2026 Fox Meyer®. All rights reserved.",
+        "footer_ext_link": "",
+        "footer_ext_label": "foxmeyer.co"
+      }
     }
   },
   "order": [
