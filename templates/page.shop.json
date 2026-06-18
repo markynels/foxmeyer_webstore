@@ -1,10 +1,95 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "layout": "fox-meyer",
   "sections": {
     "shop": {
       "type": "fox-meyer-shop",
-      "settings": {}
+      "settings": {
+        "hero_eyebrow": "Shop",
+        "hero_heading": "Freshness, delivered.",
+        "hero_sub": "",
+        "trust_strip": "Free shipping on 4+ cans | Ships in 1–2 business days",
+        "free_ship_qty": 4,
+        "ship_note": "",
+        "product_1": "",
+        "p1_badge": "Bestseller",
+        "p1_notes": "Brazil · Colombia · Medium-dark roast",
+        "p1_desc": "Our flagship espresso blend — velvety caramel, dark cocoa and toasted almond. The everyday can that started it all.",
+        "p1_chip_1": "SCA 86+",
+        "p1_chip_2": "Nitrogen-flushed",
+        "p1_chip_3": "Caramel · Cocoa · Almond",
+        "p1_rating": "4.9",
+        "p1_rating_count": "127",
+        "product_2": "",
+        "p2_badge": "New",
+        "p2_notes": "Brazil · India · Guatemala · Medium-dark roast",
+        "p2_desc": "Searching for more depth in your espresso blend? Unlock rich molasses, dark cocoa, almond with a walnut finish. Same nitrogen-sealed freshness, its own character.",
+        "p2_chip_1": "SCA 86+",
+        "p2_chip_2": "Nitrogen-flushed",
+        "p2_chip_3": "Molasses · Cocoa · Almond · Walnut",
+        "p2_rating": "4.8",
+        "p2_rating_count": "54",
+        "bundle_eyebrow": "Stock up",
+        "bundle_heading": "Build a box, skip the shipping.",
+        "tier1_qty": "1–3",
+        "tier1_label": "cans",
+        "tier1_perk": "Flat-rate shipping. Try a can, no commitment.",
+        "tier2_flag": "Most popular",
+        "tier2_qty": "4+",
+        "tier2_label": "cans",
+        "tier2_perk": "Free shipping. Approximately 1 month of espresso (Maybe a bit less if you abuse, like us).",
+        "tier3_qty": "8+",
+        "tier3_label": "cans",
+        "tier3_perk": "Free shipping + a limited-edition Fox Meyer musette (while quantities last!).",
+        "why_eyebrow": "Why Fox Meyer",
+        "why_heading": "Built for the cup, not the shelf.",
+        "why_1_icon": "nitrogen",
+        "why_1_title": "Nitrogen-sealed",
+        "why_1_body": "Flushed with nitrogen in aluminium — no oxygen, no light, no stale coffee. Roast-day flavour in every cup.",
+        "why_2_icon": "medal",
+        "why_2_title": "Competition-grade",
+        "why_2_body": "Beans scoring SCA 86+, small-batch roasted in Canada. The quality baristas chase, at home.",
+        "why_3_icon": "truck",
+        "why_3_title": "Roasted to order",
+        "why_3_body": "We roast after you order and ship within 1–2 business days. It doesn’t sit in a warehouse.",
+        "why_4_icon": "leaf",
+        "why_4_title": "Endlessly recyclable",
+        "why_4_body": "Aluminium is infinitely recyclable — unlike most foil coffee bags. Better cup, lighter footprint.",
+        "show_reviews": true,
+        "reviews_eyebrow": "Loved by",
+        "reviews_heading": "What the cup says.",
+        "review_1_quote": "Genuinely the freshest coffee I’ve had shipped to me. The can makes a real difference — it tastes like it was roasted yesterday.",
+        "review_1_name": "Mathieu L. · Montréal",
+        "review_2_quote": "Pulls a beautiful espresso. Caramel and cocoa exactly as described. The Petite Grenouille is my new daily.",
+        "review_2_name": "Sarah K. · Toronto",
+        "review_3_quote": "Ordered four cans, free shipping, arrived in two days. Packaging is gorgeous. Reordering already.",
+        "review_3_name": "Daniel P. · Ottawa",
+        "faq_eyebrow": "Good to know",
+        "faq_heading": "Questions, answered.",
+        "faq_1_q": "How fresh is it, really?",
+        "faq_1_a": "We roast after you order and nitrogen-seal each can within hours. Sealed, it stays at peak for up to 12 months — and we back it with a 100-day freshness guarantee.",
+        "faq_2_q": "Whole bean or ground?",
+        "faq_2_a": "Every can ships as whole bean to protect freshness — 150 g, about 18–20 espressos. Grinding fresh is the single biggest upgrade to your cup.",
+        "faq_3_q": "When will it arrive?",
+        "faq_3_a": "Orders ship from Dorval, Québec within 1–2 business days. Most of Canada arrives in 2–5 business days. Shipping is free on orders of 4 cans or more.",
+        "faq_4_q": "What if I don’t love it?",
+        "faq_4_a": "Tell us within 100 days and we’ll make it right with a replacement or refund. No returning half-finished cans required.",
+        "faq_5_q": "Can I pay with Shop Pay / Apple Pay?",
+        "faq_5_a": "Yes. Use the express button on any can to check out in seconds with Shop Pay, Apple Pay or Google Pay — no account or address typing needed.",
+        "footer_legal": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans (Brazil & Colombia). Recycle where facilities exist.",
+        "footer_copyright": "© 2026 Fox Meyer®. All rights reserved."
+      }
     }
   },
-  "order": ["shop"]
+  "order": [
+    "shop"
+  ]
 }
