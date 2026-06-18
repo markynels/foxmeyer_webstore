@@ -1,0 +1,24 @@
+{%- comment -%}
+  Branded store footer (matches the homepage). Usage:
+    {% render 'fox-meyer-footer', legal: section.settings.footer_legal, copyright: section.settings.footer_copyright %}
+{%- endcomment -%}
+<footer class="fms-footer">
+  <div class="fms-footer-row">
+    <div>
+      <a class="fms-wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+        <img src="{{ 'fox-meyer-logo.png' | asset_url }}" alt="{{ shop.name }}" width="100" height="26">
+      </a>
+      {%- if legal != blank -%}
+        <p class="fms-fine">{{ legal | newline_to_br }}</p>
+      {%- endif -%}
+    </div>
+    <nav class="fms-footer-links" aria-label="Footer">
+      <a href="{{ routes.root_url }}">Home</a>
+      <a href="{{ routes.root_url }}#fm-fraicheur">Freshness</a>
+      <a href="{{ routes.root_url }}#fm-origine">The blend</a>
+      <a href="{{ routes.all_products_collection_url | default: '/collections/all' }}">Shop all</a>
+      <a href="{{ routes.search_url }}?q=faq">Help &amp; FAQ</a>
+    </nav>
+  </div>
+  <p class="fms-footer-copy">{{ copyright | default: '© Fox Meyer®. All rights reserved.' }}</p>
+</footer>

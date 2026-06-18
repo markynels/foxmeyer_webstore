@@ -1,0 +1,205 @@
+{%- comment -%}
+  Fox Meyer — branded high-converting PDP. Replaces the stock Dawn product page.
+  Uses the live `product` object so price, availability and media stay accurate.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@600;700;800&display=swap">
+{{ 'fox-meyer-store.css' | asset_url | stylesheet_tag }}
+
+<script>
+  window.FMS = {
+    routesRoot: {{ routes.root_url | json }},
+    freeShipQty: {{ section.settings.free_ship_qty | default: 4 | json }},
+    moneyFormat: {{ shop.money_format | json }}
+  };
+</script>
+<script src="{{ 'fox-meyer-store.js' | asset_url }}" defer></script>
+
+{%- assign v = product.selected_or_first_available_variant -%}
+{%- comment -%} fallback can image by handle when the product has no media {%- endcomment -%}
+{%- if product.handle contains 'grenouille' -%}{%- assign fallback = 'fox-meyer-can-b.jpeg' -%}{%- else -%}{%- assign fallback = 'fox-meyer-can-a.jpeg' -%}{%- endif -%}
+
+<div class="fms">
+  {% render 'fox-meyer-header' %}
+
+  <div class="fms-wrap">
+    <section class="fms-container fms-pdp">
+
+      <!-- Gallery -->
+      <div class="fms-gallery">
+        <div class="fms-gallery-main">
+          {%- if product.featured_media -%}
+            <img data-gallery-main src="{{ product.featured_media | image_url: width: 900 }}" alt="{{ product.title }}" width="900" height="900">
+          {%- else -%}
+            <img data-gallery-main src="{{ fallback | asset_url }}" alt="{{ product.title }}" width="700" height="700">
+          {%- endif -%}
+        </div>
+        {%- if product.media.size > 1 -%}
+          <div class="fms-thumbs">
+            {%- for media in product.media limit: 5 -%}
+              <button type="button" class="fms-thumb {% if forloop.first %}is-active{% endif %}" data-thumb="{{ media | image_url: width: 900 }}" aria-label="View image {{ forloop.index }}">
+                <img src="{{ media | image_url: width: 150 }}" alt="" loading="lazy" width="150" height="150">
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Info / buy box -->
+      <div class="fms-pdp-info">
+        <div class="fms-pdp-sub">{{ section.settings.sub_label | default: product.vendor }}</div>
+        <h1 class="fms-pdp-title">{{ product.title }}</h1>
+
+        {%- if section.settings.rating != blank -%}
+          <div class="fms-rating">
+            <span class="fms-stars" aria-hidden="true">★★★★★</span>
+            <span class="fms-rating-text">{{ section.settings.rating }}{% if section.settings.rating_count != blank %} · {{ section.settings.rating_count }} reviews{% endif %}</span>
+          </div>
+        {%- endif -%}
+
+        <div class="fms-pdp-pricerow">
+          <span class="fms-price">{{ v.price | money }}</span>
+          <span class="fms-qty-label">{{ section.settings.unit_label | default: 'CAD · 150 g whole bean' }}</span>
+        </div>
+
+        <div class="fms-pdp-desc">
+          {%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>{{ section.settings.fallback_desc }}</p>{%- endif -%}
+        </div>
+
+        {%- assign chips = section.settings.spec_chips | split: '|' -%}
+        {%- if chips.size > 0 -%}
+          <div class="fms-chips">
+            {%- for c in chips -%}<span class="fms-chip {% if forloop.index == 2 %}fms-chip-green{% endif %}">{{ c | strip }}</span>{%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        <hr class="fms-divider">
+
+        <!-- Buy box -->
+        {%- form 'product', product, data-fms-form: '', class: 'fms-buy' -%}
+          <input type="hidden" name="id" value="{{ v.id }}">
+          <div class="fms-qtyrow" data-sticky-anchor>
+            <div class="fms-qty" data-stepper>
+              <button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button>
+              <input type="text" name="quantity" value="1" inputmode="numeric" pattern="[0-9]*" aria-label="Quantity">
+              <button type="button" data-step="1" aria-label="Increase quantity">+</button>
+            </div>
+            <span class="fms-qty-label">cans · free shipping on {{ section.settings.free_ship_qty | default: 4 }}+</span>
+          </div>
+          {%- if v.available -%}
+            <button type="submit" class="fms-btn fms-btn-orange" data-add>Add to cart — {{ v.price | money }}</button>
+            {{ form | payment_button }}
+          {%- else -%}
+            <button type="button" class="fms-btn fms-btn-orange" disabled>Sold out</button>
+          {%- endif -%}
+          <p class="fms-ship-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {{ section.settings.ship_note }}
+          </p>
+        {%- endform -%}
+
+        <hr class="fms-divider">
+
+        <!-- Recipe -->
+        {%- if section.settings.show_recipe -%}
+          <p class="fms-eyebrow" style="margin-bottom:8px">{{ section.settings.recipe_eyebrow }}</p>
+          <div class="fms-recipe">
+            <div><div class="fms-num">{{ section.settings.recipe_water }}<span>°C</span></div><div class="fms-lab">Water</div></div>
+            <div><div class="fms-num">{{ section.settings.recipe_dose }}<span>g</span></div><div class="fms-lab">Dose</div></div>
+            <div><div class="fms-num">{{ section.settings.recipe_yield }}<span>g</span></div><div class="fms-lab">Yield</div></div>
+            <div><div class="fms-num">{{ section.settings.recipe_time }}<span>s</span></div><div class="fms-lab">Time</div></div>
+          </div>
+        {%- endif -%}
+      </div>
+    </section>
+
+    <!-- Trust row -->
+    <section class="fms-container fms-section" id="why">
+      <div class="fms-values">
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="3" width="10" height="18" rx="3"/><path d="M7 8h10" stroke-linecap="round"/></svg></div><h3>Nitrogen-sealed</h3><p>{{ section.settings.why_1 }}</p></div>
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="14" r="6"/><path d="M9 3l3 6 3-6" stroke-linejoin="round"/></svg></div><h3>Competition-grade</h3><p>{{ section.settings.why_2 }}</p></div>
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h11v9H2zM13 10h5l3 3v3h-8z" stroke-linejoin="round"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></div><h3>Ships in 1–2 days</h3><p>{{ section.settings.why_3 }}</p></div>
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>100-day guarantee</h3><p>{{ section.settings.why_4 }}</p></div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="fms-container fms-section" id="faq" style="padding-top:0">
+      <p class="fms-eyebrow fms-center">{{ section.settings.faq_eyebrow }}</p>
+      <h2 class="fms-h2 fms-center" style="margin-bottom:40px">{{ section.settings.faq_heading }}</h2>
+      <div class="fms-faq">
+        {%- for i in (1..4) -%}
+          {%- assign q = 'faq_' | append: i | append: '_q' -%}
+          {%- assign a = 'faq_' | append: i | append: '_a' -%}
+          {%- if section.settings[q] != blank -%}
+            <details {% if i == 1 %}open{% endif %}>
+              <summary>{{ section.settings[q] }}</summary>
+              <div class="fms-faq-a">{{ section.settings[a] }}</div>
+            </details>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+  </div>
+
+  {% render 'fox-meyer-footer', legal: section.settings.footer_legal, copyright: section.settings.footer_copyright %}
+
+  <!-- Sticky mobile buy bar -->
+  <div class="fms-stickybar" aria-hidden="true">
+    <span class="fms-price">{{ v.price | money }}</span>
+    {%- if v.available -%}
+      <button type="button" class="fms-btn fms-btn-orange" data-sticky-add>Add to cart</button>
+    {%- else -%}
+      <button type="button" class="fms-btn fms-btn-orange" disabled>Sold out</button>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Fox Meyer Product",
+  "settings": [
+    { "type": "header", "content": "Buy box" },
+    { "type": "text", "id": "sub_label", "label": "Eyebrow above title", "default": "Specialty espresso · Nitrogen-sealed" },
+    { "type": "text", "id": "unit_label", "label": "Unit label beside price", "default": "CAD · 150 g whole bean" },
+    { "type": "text", "id": "spec_chips", "label": "Spec chips (separate with | )", "default": "150 g · Whole bean | Nitrogen-flushed | SCA 86+ | Recyclable aluminium" },
+    { "type": "number", "id": "free_ship_qty", "label": "Free-shipping threshold (cans)", "default": 4 },
+    { "type": "text", "id": "ship_note", "label": "Reassurance under buy buttons", "default": "Roast-fresh · Ships in 1–2 days · 100-day freshness guarantee" },
+    { "type": "textarea", "id": "fallback_desc", "label": "Description fallback (if product has none)", "default": "Competition-grade beans, small-batch roasted in Dorval and nitrogen-sealed in aluminium for roast-day freshness in every cup." },
+    { "type": "text", "id": "rating", "label": "Rating value", "default": "4.9" },
+    { "type": "text", "id": "rating_count", "label": "Rating count", "default": "127" },
+
+    { "type": "header", "content": "Recipe" },
+    { "type": "checkbox", "id": "show_recipe", "label": "Show recipe", "default": true },
+    { "type": "text", "id": "recipe_eyebrow", "label": "Eyebrow", "default": "A starting recipe" },
+    { "type": "text", "id": "recipe_water", "label": "Water °C", "default": "90" },
+    { "type": "text", "id": "recipe_dose", "label": "Dose g", "default": "18" },
+    { "type": "text", "id": "recipe_yield", "label": "Yield g", "default": "36" },
+    { "type": "text", "id": "recipe_time", "label": "Time s", "default": "32" },
+
+    { "type": "header", "content": "Why Fox Meyer (trust row)" },
+    { "type": "textarea", "id": "why_1", "label": "Nitrogen-sealed", "default": "No oxygen, no light — roast-day flavour, locked in." },
+    { "type": "textarea", "id": "why_2", "label": "Competition-grade", "default": "SCA 86+ beans, small-batch roasted in Québec." },
+    { "type": "textarea", "id": "why_3", "label": "Fast shipping", "default": "Roasted to order, shipped from Dorval in 1–2 days." },
+    { "type": "textarea", "id": "why_4", "label": "Guarantee", "default": "Don’t love it within 100 days? We’ll make it right." },
+
+    { "type": "header", "content": "FAQ" },
+    { "type": "text", "id": "faq_eyebrow", "label": "Eyebrow", "default": "Good to know" },
+    { "type": "text", "id": "faq_heading", "label": "Heading", "default": "Questions, answered." },
+    { "type": "text", "id": "faq_1_q", "label": "Q1", "default": "How fresh is it?" },
+    { "type": "textarea", "id": "faq_1_a", "label": "A1", "default": "Roasted after you order and nitrogen-sealed within hours. Sealed, it stays at peak for up to 12 months — backed by our 100-day freshness guarantee." },
+    { "type": "text", "id": "faq_2_q", "label": "Q2", "default": "Whole bean or ground?" },
+    { "type": "textarea", "id": "faq_2_a", "label": "A2", "default": "Whole bean only — 150 g, about 18–20 espressos. Grinding fresh is the biggest single upgrade to your cup." },
+    { "type": "text", "id": "faq_3_q", "label": "Q3", "default": "Shipping & delivery?" },
+    { "type": "textarea", "id": "faq_3_a", "label": "A3", "default": "Ships from Dorval, Québec within 1–2 business days; most of Canada arrives in 2–5. Free shipping on 4 cans or more." },
+    { "type": "text", "id": "faq_4_q", "label": "Q4", "default": "How do I pay?" },
+    { "type": "textarea", "id": "faq_4_a", "label": "A4", "default": "Card, or one tap with Shop Pay, Apple Pay and Google Pay via the express button above — no address typing required." },
+
+    { "type": "header", "content": "Footer" },
+    { "type": "textarea", "id": "footer_legal", "label": "Legal text", "default": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans. Recycle where facilities exist." },
+    { "type": "text", "id": "footer_copyright", "label": "Copyright line", "default": "© 2026 Fox Meyer®. All rights reserved." }
+  ]
+}
+{% endschema %}

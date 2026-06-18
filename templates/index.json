@@ -13,7 +13,7 @@
     "fox-meyer-homepage": {
       "type": "fox-meyer-homepage",
       "settings": {
-        "shop_link": "shopify://collections/all",
+        "shop_link": "shopify://pages/shop",
         "shop_button_label": "Shop",
         "lang_link": "",
         "lang_label": "FR",

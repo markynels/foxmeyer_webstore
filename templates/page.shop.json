@@ -1,10 +1,10 @@
 {
   "layout": "fox-meyer",
   "sections": {
-    "main": {
-      "type": "fox-meyer-product",
+    "shop": {
+      "type": "fox-meyer-shop",
       "settings": {}
     }
   },
-  "order": ["main"]
+  "order": ["shop"]
 }

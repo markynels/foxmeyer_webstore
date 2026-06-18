@@ -1,0 +1,20 @@
+{%- comment -%}
+  Branded store header (matches the homepage). Usage:
+    {% render 'fox-meyer-header', shop_url: '/pages/shop' %}
+{%- endcomment -%}
+<header class="fms-header">
+  <a class="fms-wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+    <img src="{{ 'fox-meyer-logo.png' | asset_url }}" alt="{{ shop.name }}" width="120" height="28">
+  </a>
+  <nav class="fms-nav" aria-label="Primary">
+    <a class="fms-header-btn" href="{{ shop_url | default: '/pages/shop' }}">Shop</a>
+    <a class="fms-cart-link" href="{{ routes.cart_url }}" data-open-cart aria-label="Open cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+        <path d="M6 7h12l-1 13H7L6 7Z" stroke-linejoin="round"/>
+        <path d="M9 7a3 3 0 0 1 6 0" stroke-linecap="round"/>
+      </svg>
+      <span>Cart</span>
+      <span class="fms-cart-count" {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+    </a>
+  </nav>
+</header>

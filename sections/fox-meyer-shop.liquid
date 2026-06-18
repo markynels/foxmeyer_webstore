@@ -1,0 +1,267 @@
+{%- comment -%}
+  Fox Meyer — unified Shop hub. Both cans, inline add-to-cart + Shop Pay express
+  checkout, bundle incentives, trust, social proof and FAQ. Matches the homepage.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@600;700;800&display=swap">
+{{ 'fox-meyer-store.css' | asset_url | stylesheet_tag }}
+
+<script>
+  window.FMS = {
+    routesRoot: {{ routes.root_url | json }},
+    freeShipQty: {{ section.settings.free_ship_qty | default: 4 | json }},
+    moneyFormat: {{ shop.money_format | json }}
+  };
+</script>
+<script src="{{ 'fox-meyer-store.js' | asset_url }}" defer></script>
+
+{%- assign p1 = section.settings.product_1 | default: all_products['fox-meyer'] -%}
+{%- assign p2 = section.settings.product_2 | default: all_products['petite-grenouille'] -%}
+
+<div class="fms">
+  {% render 'fox-meyer-header', shop_url: request.path %}
+
+  <div class="fms-wrap">
+
+    <!-- Hero -->
+    <section class="fms-container fms-section fms-hero">
+      <p class="fms-eyebrow">{{ section.settings.hero_eyebrow }}</p>
+      <h1 class="fms-h1">{{ section.settings.hero_heading }}</h1>
+      <p class="fms-lead fms-center">{{ section.settings.hero_sub }}</p>
+      <div class="fms-trust">
+        {%- assign trust_items = section.settings.trust_strip | split: '|' -%}
+        {%- for t in trust_items -%}
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {{ t | strip }}
+          </span>
+        {%- endfor -%}
+      </div>
+    </section>
+
+    <!-- Product cards -->
+    <section class="fms-container fms-section" id="cans" style="padding-top:0">
+      <div class="fms-products">
+        {% render 'fox-meyer-product-card',
+          product: p1,
+          fallback_image: 'fox-meyer-can-a.jpeg',
+          badge: section.settings.p1_badge,
+          notes: section.settings.p1_notes,
+          desc: section.settings.p1_desc,
+          chip_1: section.settings.p1_chip_1,
+          chip_2: section.settings.p1_chip_2,
+          chip_3: section.settings.p1_chip_3,
+          rating: section.settings.p1_rating,
+          rating_count: section.settings.p1_rating_count,
+          ship_note: section.settings.ship_note %}
+
+        {% render 'fox-meyer-product-card',
+          product: p2,
+          fallback_image: 'fox-meyer-can-b.jpeg',
+          badge: section.settings.p2_badge,
+          badge_green: true,
+          notes: section.settings.p2_notes,
+          desc: section.settings.p2_desc,
+          chip_1: section.settings.p2_chip_1,
+          chip_2: section.settings.p2_chip_2,
+          chip_3: section.settings.p2_chip_3,
+          rating: section.settings.p2_rating,
+          rating_count: section.settings.p2_rating_count,
+          ship_note: section.settings.ship_note %}
+      </div>
+    </section>
+
+    <!-- Bundle tiers -->
+    <section class="fms-container fms-section" id="bundle" style="padding-top:0">
+      <p class="fms-eyebrow fms-center">{{ section.settings.bundle_eyebrow }}</p>
+      <h2 class="fms-h2 fms-center">{{ section.settings.bundle_heading }}</h2>
+      <div class="fms-bundles">
+        <div class="fms-tier">
+          <div class="fms-tier-qty">{{ section.settings.tier1_qty }}<span>{{ section.settings.tier1_label }}</span></div>
+          <p class="fms-tier-perk">{{ section.settings.tier1_perk }}</p>
+        </div>
+        <div class="fms-tier is-feature">
+          <span class="fms-tier-flag">{{ section.settings.tier2_flag }}</span>
+          <div class="fms-tier-qty">{{ section.settings.tier2_qty }}<span>{{ section.settings.tier2_label }}</span></div>
+          <p class="fms-tier-perk">{{ section.settings.tier2_perk }}</p>
+        </div>
+        <div class="fms-tier">
+          <div class="fms-tier-qty">{{ section.settings.tier3_qty }}<span>{{ section.settings.tier3_label }}</span></div>
+          <p class="fms-tier-perk">{{ section.settings.tier3_perk }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Fox Meyer -->
+    <section class="fms-container fms-section" id="why">
+      <p class="fms-eyebrow fms-center">{{ section.settings.why_eyebrow }}</p>
+      <h2 class="fms-h2 fms-center" style="margin-bottom:48px">{{ section.settings.why_heading }}</h2>
+      <div class="fms-values">
+        {%- for i in (1..4) -%}
+          {%- assign t = 'why_' | append: i | append: '_title' -%}
+          {%- assign b = 'why_' | append: i | append: '_body' -%}
+          {%- assign ic = 'why_' | append: i | append: '_icon' -%}
+          {%- assign icon = section.settings[ic] -%}
+          <div class="fms-value">
+            <div class="fms-value-ic">
+              {%- case icon -%}
+                {%- when 'nitrogen' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="3" width="10" height="18" rx="3"/><path d="M7 8h10" stroke-linecap="round"/></svg>
+                {%- when 'leaf' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 4S8 4 6 12c-1 5 3 8 3 8M20 4c0 8-5 11-10 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {%- when 'medal' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="14" r="6"/><path d="M9 3l3 6 3-6" stroke-linejoin="round"/></svg>
+                {%- when 'truck' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h11v9H2zM13 10h5l3 3v3h-8z" stroke-linejoin="round"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
+                {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              {%- endcase -%}
+            </div>
+            <h3>{{ section.settings[t] }}</h3>
+            <p>{{ section.settings[b] }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    {%- if section.settings.show_reviews -%}
+    <section class="fms-container fms-section" id="reviews" style="padding-top:0">
+      <p class="fms-eyebrow fms-center">{{ section.settings.reviews_eyebrow }}</p>
+      <h2 class="fms-h2 fms-center" style="margin-bottom:48px">{{ section.settings.reviews_heading }}</h2>
+      <div class="fms-reviews">
+        {%- for i in (1..3) -%}
+          {%- assign q = 'review_' | append: i | append: '_quote' -%}
+          {%- assign n = 'review_' | append: i | append: '_name' -%}
+          {%- if section.settings[q] != blank -%}
+            <figure class="fms-review">
+              <div class="fms-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>{{ section.settings[q] }}</blockquote>
+              <cite>{{ section.settings[n] }}</cite>
+            </figure>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+    {%- endif -%}
+
+    <!-- FAQ -->
+    <section class="fms-container fms-section" id="faq" style="padding-top:0">
+      <p class="fms-eyebrow fms-center">{{ section.settings.faq_eyebrow }}</p>
+      <h2 class="fms-h2 fms-center" style="margin-bottom:40px">{{ section.settings.faq_heading }}</h2>
+      <div class="fms-faq">
+        {%- for i in (1..5) -%}
+          {%- assign q = 'faq_' | append: i | append: '_q' -%}
+          {%- assign a = 'faq_' | append: i | append: '_a' -%}
+          {%- if section.settings[q] != blank -%}
+            <details {% if i == 1 %}open{% endif %}>
+              <summary>{{ section.settings[q] }}</summary>
+              <div class="fms-faq-a">{{ section.settings[a] }}</div>
+            </details>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+
+  </div>
+
+  {% render 'fox-meyer-footer', legal: section.settings.footer_legal, copyright: section.settings.footer_copyright %}
+</div>
+
+{% schema %}
+{
+  "name": "Fox Meyer Shop",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_eyebrow", "label": "Eyebrow", "default": "Shop" },
+    { "type": "text", "id": "hero_heading", "label": "Heading", "default": "Freshness, delivered." },
+    { "type": "textarea", "id": "hero_sub", "label": "Subheading", "default": "Nitrogen-sealed specialty coffee, roasted to order in Dorval. Pick your can — checkout takes seconds." },
+    { "type": "text", "id": "trust_strip", "label": "Trust strip (separate with | )", "default": "Roasted to order · Brazil & Colombia | Free shipping on 4+ cans | Ships in 1–2 business days | Secure checkout" },
+    { "type": "number", "id": "free_ship_qty", "label": "Free-shipping threshold (cans)", "default": 4 },
+    { "type": "text", "id": "ship_note", "label": "Reassurance line under buy buttons", "default": "Roast-fresh · Ships in 1–2 days · 100-day freshness guarantee" },
+
+    { "type": "header", "content": "Product 1 (left card)" },
+    { "type": "product", "id": "product_1", "label": "Product (defaults to “fox-meyer”)" },
+    { "type": "text", "id": "p1_badge", "label": "Badge", "default": "Bestseller" },
+    { "type": "text", "id": "p1_notes", "label": "Tasting notes eyebrow", "default": "Brazil · Colombia · Medium-dark" },
+    { "type": "textarea", "id": "p1_desc", "label": "One-line description", "default": "Our flagship espresso blend — velvety caramel, dark cocoa and toasted almond. The everyday can that started it all." },
+    { "type": "text", "id": "p1_chip_1", "label": "Chip 1", "default": "SCA 86+" },
+    { "type": "text", "id": "p1_chip_2", "label": "Chip 2 (green)", "default": "Nitrogen-flushed" },
+    { "type": "text", "id": "p1_chip_3", "label": "Chip 3", "default": "Caramel · Cocoa · Almond" },
+    { "type": "text", "id": "p1_rating", "label": "Rating value", "default": "4.9" },
+    { "type": "text", "id": "p1_rating_count", "label": "Rating count", "default": "127" },
+
+    { "type": "header", "content": "Product 2 (right card)" },
+    { "type": "product", "id": "product_2", "label": "Product (defaults to “petite-grenouille”)" },
+    { "type": "text", "id": "p2_badge", "label": "Badge", "default": "New" },
+    { "type": "text", "id": "p2_notes", "label": "Tasting notes eyebrow", "default": "Brazil · India · Guatemala · Medium-dark" },
+    { "type": "textarea", "id": "p2_desc", "label": "One-line description", "default": "A second expression with more depth — molasses, dark cocoa, almond and walnut. Same nitrogen-sealed freshness, its own character." },
+    { "type": "text", "id": "p2_chip_1", "label": "Chip 1", "default": "SCA 86+" },
+    { "type": "text", "id": "p2_chip_2", "label": "Chip 2 (green)", "default": "Nitrogen-flushed" },
+    { "type": "text", "id": "p2_chip_3", "label": "Chip 3", "default": "Molasses · Cocoa · Walnut" },
+    { "type": "text", "id": "p2_rating", "label": "Rating value", "default": "4.8" },
+    { "type": "text", "id": "p2_rating_count", "label": "Rating count", "default": "54" },
+
+    { "type": "header", "content": "Bundle / free-shipping tiers" },
+    { "type": "text", "id": "bundle_eyebrow", "label": "Eyebrow", "default": "Stock up" },
+    { "type": "text", "id": "bundle_heading", "label": "Heading", "default": "Build a box, skip the shipping." },
+    { "type": "text", "id": "tier1_qty", "label": "Tier 1 — qty", "default": "1–3" },
+    { "type": "text", "id": "tier1_label", "label": "Tier 1 — label", "default": "cans" },
+    { "type": "text", "id": "tier1_perk", "label": "Tier 1 — perk", "default": "Flat-rate shipping. Try a can, no commitment." },
+    { "type": "text", "id": "tier2_flag", "label": "Tier 2 — flag", "default": "Most popular" },
+    { "type": "text", "id": "tier2_qty", "label": "Tier 2 — qty", "default": "4+" },
+    { "type": "text", "id": "tier2_label", "label": "Tier 2 — label", "default": "cans" },
+    { "type": "text", "id": "tier2_perk", "label": "Tier 2 — perk", "default": "Free shipping. About two weeks of daily espresso." },
+    { "type": "text", "id": "tier3_qty", "label": "Tier 3 — qty", "default": "8+" },
+    { "type": "text", "id": "tier3_label", "label": "Tier 3 — label", "default": "cans" },
+    { "type": "text", "id": "tier3_perk", "label": "Tier 3 — perk", "default": "Free shipping + a limited-edition Fox Meyer musette." },
+
+    { "type": "header", "content": "Why Fox Meyer" },
+    { "type": "text", "id": "why_eyebrow", "label": "Eyebrow", "default": "Why Fox Meyer" },
+    { "type": "text", "id": "why_heading", "label": "Heading", "default": "Built for the cup, not the shelf." },
+    { "type": "select", "id": "why_1_icon", "label": "Icon 1", "default": "nitrogen", "options": [
+      { "value": "nitrogen", "label": "Can" }, { "value": "leaf", "label": "Leaf" }, { "value": "medal", "label": "Medal" }, { "value": "truck", "label": "Truck" }, { "value": "check", "label": "Check" } ] },
+    { "type": "text", "id": "why_1_title", "label": "Title 1", "default": "Nitrogen-sealed" },
+    { "type": "textarea", "id": "why_1_body", "label": "Body 1", "default": "Flushed with nitrogen in aluminium — no oxygen, no light, no stale coffee. Roast-day flavour in every cup." },
+    { "type": "select", "id": "why_2_icon", "label": "Icon 2", "default": "medal", "options": [
+      { "value": "nitrogen", "label": "Can" }, { "value": "leaf", "label": "Leaf" }, { "value": "medal", "label": "Medal" }, { "value": "truck", "label": "Truck" }, { "value": "check", "label": "Check" } ] },
+    { "type": "text", "id": "why_2_title", "label": "Title 2", "default": "Competition-grade" },
+    { "type": "textarea", "id": "why_2_body", "label": "Body 2", "default": "Beans scoring SCA 86+, small-batch roasted in Dorval, Québec. The quality baristas chase, at home." },
+    { "type": "select", "id": "why_3_icon", "label": "Icon 3", "default": "truck", "options": [
+      { "value": "nitrogen", "label": "Can" }, { "value": "leaf", "label": "Leaf" }, { "value": "medal", "label": "Medal" }, { "value": "truck", "label": "Truck" }, { "value": "check", "label": "Check" } ] },
+    { "type": "text", "id": "why_3_title", "label": "Title 3", "default": "Roasted to order" },
+    { "type": "textarea", "id": "why_3_body", "label": "Body 3", "default": "We roast after you order and ship within 1–2 business days. It doesn’t sit in a warehouse." },
+    { "type": "select", "id": "why_4_icon", "label": "Icon 4", "default": "leaf", "options": [
+      { "value": "nitrogen", "label": "Can" }, { "value": "leaf", "label": "Leaf" }, { "value": "medal", "label": "Medal" }, { "value": "truck", "label": "Truck" }, { "value": "check", "label": "Check" } ] },
+    { "type": "text", "id": "why_4_title", "label": "Title 4", "default": "Endlessly recyclable" },
+    { "type": "textarea", "id": "why_4_body", "label": "Body 4", "default": "Aluminium is infinitely recyclable — unlike most foil coffee bags. Better cup, lighter footprint." },
+
+    { "type": "header", "content": "Reviews / social proof" },
+    { "type": "checkbox", "id": "show_reviews", "label": "Show reviews section", "default": true },
+    { "type": "text", "id": "reviews_eyebrow", "label": "Eyebrow", "default": "Loved by" },
+    { "type": "text", "id": "reviews_heading", "label": "Heading", "default": "What the cup says." },
+    { "type": "textarea", "id": "review_1_quote", "label": "Review 1 — quote", "default": "Genuinely the freshest coffee I’ve had shipped to me. The can makes a real difference — it tastes like it was roasted yesterday." },
+    { "type": "text", "id": "review_1_name", "label": "Review 1 — name", "default": "Mathieu L. · Montréal" },
+    { "type": "textarea", "id": "review_2_quote", "label": "Review 2 — quote", "default": "Pulls a beautiful espresso. Caramel and cocoa exactly as described. The Petite Grenouille is my new daily." },
+    { "type": "text", "id": "review_2_name", "label": "Review 2 — name", "default": "Sarah K. · Toronto" },
+    { "type": "textarea", "id": "review_3_quote", "label": "Review 3 — quote", "default": "Ordered four cans, free shipping, arrived in two days. Packaging is gorgeous. Reordering already." },
+    { "type": "text", "id": "review_3_name", "label": "Review 3 — name", "default": "Daniel P. · Ottawa" },
+
+    { "type": "header", "content": "FAQ" },
+    { "type": "text", "id": "faq_eyebrow", "label": "Eyebrow", "default": "Good to know" },
+    { "type": "text", "id": "faq_heading", "label": "Heading", "default": "Questions, answered." },
+    { "type": "text", "id": "faq_1_q", "label": "Q1", "default": "How fresh is it, really?" },
+    { "type": "textarea", "id": "faq_1_a", "label": "A1", "default": "We roast after you order and nitrogen-seal each can within hours. Sealed, it stays at peak for up to 12 months — and we back it with a 100-day freshness guarantee." },
+    { "type": "text", "id": "faq_2_q", "label": "Q2", "default": "Whole bean or ground?" },
+    { "type": "textarea", "id": "faq_2_a", "label": "A2", "default": "Every can ships as whole bean to protect freshness — 150 g, about 18–20 espressos. Grinding fresh is the single biggest upgrade to your cup." },
+    { "type": "text", "id": "faq_3_q", "label": "Q3", "default": "When will it arrive?" },
+    { "type": "textarea", "id": "faq_3_a", "label": "A3", "default": "Orders ship from Dorval, Québec within 1–2 business days. Most of Canada arrives in 2–5 business days. Shipping is free on orders of 4 cans or more." },
+    { "type": "text", "id": "faq_4_q", "label": "Q4", "default": "What if I don’t love it?" },
+    { "type": "textarea", "id": "faq_4_a", "label": "A4", "default": "Tell us within 100 days and we’ll make it right with a replacement or refund. No returning half-finished cans required." },
+    { "type": "text", "id": "faq_5_q", "label": "Q5", "default": "Can I pay with Shop Pay / Apple Pay?" },
+    { "type": "textarea", "id": "faq_5_a", "label": "A5", "default": "Yes. Use the express button on any can to check out in seconds with Shop Pay, Apple Pay or Google Pay — no account or address typing needed." },
+
+    { "type": "header", "content": "Footer" },
+    { "type": "textarea", "id": "footer_legal", "label": "Legal text", "default": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans (Brazil & Colombia). Recycle where facilities exist." },
+    { "type": "text", "id": "footer_copyright", "label": "Copyright line", "default": "© 2026 Fox Meyer®. All rights reserved." }
+  ],
+  "presets": [ { "name": "Fox Meyer Shop" } ]
+}
+{% endschema %}
