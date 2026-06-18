@@ -4,10 +4,6 @@
 
 {{ 'fox-meyer-homepage.css' | asset_url | stylesheet_tag }}
 
-<style>
-  .fm-echo { background-image: url({{ 'fox-meyer-logo.png' | asset_url }}); }
-</style>
-
 <script>
   window.foxMeyerCanA = '{{ "fox-meyer-can-a.jpeg" | asset_url }}';
   window.foxMeyerCanB = '{{ "fox-meyer-can-b.jpeg" | asset_url }}';
@@ -27,7 +23,6 @@
 
   <!-- Background layers -->
   <div id="fm-bg-green" class="fm-bg-green" aria-hidden="true"></div>
-  <div class="fm-echo" aria-hidden="true"></div>
   <canvas id="fm-stage" class="fm-stage" aria-hidden="true"></canvas>
 
   <!-- Header -->

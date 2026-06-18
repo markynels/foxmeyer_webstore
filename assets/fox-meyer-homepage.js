@@ -140,7 +140,7 @@
     rig.scale.setScalar(s);
     sideX    = isMobile ? 0 : Math.min(3.4, (w / h) * 1.55);
     baseY    = isMobile ? 0.9 : 0;
-    heroDrop = isMobile ? -2.2 : -2.7;
+    heroDrop = isMobile ? -3.2 : -2.7;
     measure();
   }
 
@@ -225,16 +225,6 @@
     var dt = Math.min(clock.getDelta(), 0.05);
     var t  = clock.elapsedTime;
 
-    if (reduced) {
-      rig.position.set(0, baseY + heroDrop * 0.55, 0);
-      rig.rotation.set(0.06, 0, 0);
-      if (canA) { canA.spinner.rotation.y = FRONT; setCanOpacity(canA, 1); }
-      if (canB) setCanOpacity(canB, 0);
-      if (bgGreen) bgGreen.style.opacity = 0;
-      renderer.render(scene, camera);
-      return;
-    }
-
     sampleTarget(target);
     var k = 1 - Math.exp(-dt / 0.10);
     cur.x    += (target.x    - cur.x)    * k;
@@ -244,11 +234,16 @@
     cur.rot  += (target.rot  - cur.rot)  * k;
     cur.swap += (target.swap - cur.swap) * k;
 
-    var bob = Math.sin(t * 1.1) * 0.06;
+    /* The can's spin, position and the Petite Grenouille crossfade are all
+       scroll-driven, so they run for everyone. Under reduced-motion we only
+       drop the autonomous idle motion (the gentle bob + x-axis wobble) — this
+       keeps the experience working on iOS where "Reduce Motion" is commonly
+       enabled (previously this branch froze the can high over the text). */
+    var bob = reduced ? 0 : Math.sin(t * 1.1) * 0.06;
     rig.position.x = cur.x;
     rig.position.y = baseY + cur.y + bob;
     rig.rotation.z = cur.tilt;
-    rig.rotation.x = 0.05 + Math.sin(t * 0.7) * 0.012;
+    rig.rotation.x = reduced ? 0.05 : 0.05 + Math.sin(t * 0.7) * 0.012;
     camera.position.z = CAM_Z - cur.zoom;
 
     var s  = cur.swap;
