@@ -61,13 +61,20 @@
     return { group: group, spinner: spinner };
   }
 
-  function setCanOpacity(can, o) {
+  function setCanOpacity(can, o, forceSolid) {
     can.group.visible = o > 0.004;
+    /* When a can is fully visible, render it as opaque so the depth buffer
+       occludes the lid/walls correctly (otherwise the metal lid shows through
+       the can wall). Transparency is only used mid-crossfade.
+       forceSolid keeps depth-writing on while a can is being faded in but is
+       NOT overlapping the other can (the Shop split) — without it the lid and
+       bottom cap, drawn after the body, paint over the wall and read through it. */
+    var opaque = o > 0.985;
     can.group.traverse(function (n) {
       if (n.material) {
-        n.material.transparent = true;
+        n.material.transparent = !opaque;
         n.material.opacity = o;
-        n.material.depthWrite = o > 0.92;
+        n.material.depthWrite = opaque || o > 0.92 || forceSolid;
       }
     });
   }
@@ -147,14 +154,15 @@
   /* ---------- scene keyframes ---------- */
   var TAU   = Math.PI * 2;
   var FRONT = Math.PI;
-  var IDS   = ['fm-hero', 'fm-fraicheur', 'fm-origine', 'fm-recette', 'fm-grenouille', 'fm-acheter'];
+  var IDS   = ['fm-hero', 'fm-fraicheur', 'fm-origine', 'fm-recette', 'fm-grenouille', 'fm-recette-pg', 'fm-acheter'];
   var STATES = [
     { xm: 0.00, y: null, zoom: 0.00, tilt:  0.00, turns: 0.00, swap: 0 },
     { xm: 0.34, y: 0,    zoom: 0.25, tilt: -0.05, turns: 0.50, swap: 0 },
     { xm:-0.34, y: 0,    zoom: 0.25, tilt:  0.05, turns: 1.00, swap: 0 },
     { xm: 0.30, y: 0,    zoom: 0.55, tilt: -0.04, turns: 1.50, swap: 0 },
     { xm:-0.40, y: 0,    zoom: 0.40, tilt:  0.05, turns: 2.00, swap: 1 },
-    { xm:-0.40, y: 0,    zoom: 0.05, tilt:  0.00, turns: 2.20, swap: 1 }
+    { xm: 0.30, y: 0,    zoom: 0.55, tilt: -0.04, turns: 2.50, swap: 1 },
+    { xm:-0.62, y: 0,    zoom:-0.30, tilt:  0.00, turns: 3.00, swap: 1 }
   ];
   var anchors = [];
 
@@ -190,11 +198,17 @@
     var rA  = anchors[3], gA = anchors[4];
     var raw = (gA > rA) ? (vc - rA) / (gA - rA) : (vc >= gA ? 1 : 0);
     out.swap = Math.max(0, Math.min(1, raw * 1.4));
+    /* split: both cans separate side-by-side as we arrive at the Shop section,
+       ramping from the Petite Grenouille recipe (anchor 5) to Shop (anchor 6). */
+    var pA = anchors[5], sA = anchors[6];
+    var rawSplit = (sA > pA) ? (vc - pA) / (sA - pA) : (vc >= sA ? 1 : 0);
+    out.split = Math.max(0, Math.min(1, rawSplit * 1.3));
   }
 
   /* ---------- animation state ---------- */
-  var target = { x: 0, y: heroDrop, zoom: 0, tilt: 0, rot: FRONT, swap: 0 };
-  var cur    = { x: 0, y: heroDrop, zoom: 0, tilt: 0, rot: FRONT, swap: 0 };
+  var target = { x: 0, y: heroDrop, zoom: 0, tilt: 0, rot: FRONT, swap: 0, split: 0 };
+  var cur    = { x: 0, y: heroDrop, zoom: 0, tilt: 0, rot: FRONT, swap: 0, split: 0 };
+  var footerEl = document.querySelector('.fm-footer');
   frame();
   window.addEventListener('resize', frame, { passive: true });
   window.addEventListener('scroll', measure, { passive: true });
@@ -233,6 +247,7 @@
     cur.tilt += (target.tilt - cur.tilt) * k;
     cur.rot  += (target.rot  - cur.rot)  * k;
     cur.swap += (target.swap - cur.swap) * k;
+    cur.split += (target.split - cur.split) * k;
 
     /* The can's spin, position and the Petite Grenouille crossfade are all
        scroll-driven, so they run for everyone. Under reduced-motion we only
@@ -240,8 +255,23 @@
        keeps the experience working on iOS where "Reduce Motion" is commonly
        enabled (previously this branch froze the can high over the text). */
     var bob = reduced ? 0 : Math.sin(t * 1.1) * 0.06;
+
+    /* Footer guard: once the footer scrolls up into view, carry the cans up with
+       it (1:1 with the scroll) so they stop above the footer instead of floating
+       over it. The pixel→world conversion keeps the motion locked to the page. */
+    var footerPush = 0;
+    if (footerEl) {
+      var fTop  = footerEl.getBoundingClientRect().top;       // px from viewport top
+      var enter = window.innerHeight - fTop;                  // px the footer has risen into view
+      if (enter > 0) {
+        var dist       = CAM_Z - cur.zoom;                    // camera → can-plane distance
+        var worldPerPx = (2 * dist * Math.tan((camera.fov * Math.PI / 180) / 2)) / window.innerHeight;
+        footerPush     = enter * worldPerPx;
+      }
+    }
+
     rig.position.x = cur.x;
-    rig.position.y = baseY + cur.y + bob;
+    rig.position.y = baseY + cur.y + bob + footerPush;
     rig.rotation.z = cur.tilt;
     rig.rotation.x = reduced ? 0.05 : 0.05 + Math.sin(t * 0.7) * 0.012;
     camera.position.z = CAM_Z - cur.zoom;
@@ -250,8 +280,28 @@
     var se = s * s * s * (s * (s * 6 - 15) + 10);
     var oB = Math.max(0, Math.min(1, se / 0.80));
     var oA = Math.max(0, Math.min(1, 1 - (se - 0.80) / 0.20));
-    if (canA) { canA.spinner.rotation.y = cur.rot; setCanOpacity(canA, oA); }
-    if (canB) { canB.spinner.rotation.y = cur.rot; setCanOpacity(canB, oB); }
+
+    /* At the Shop section both cans appear side by side. Rather than fade can A
+       back in (a semi-transparent can lets its interior cap/lid read through the
+       wall), we bring it in fully opaque and slide it out from behind can B,
+       which sits slightly larger and in front — so can A is hidden at the start
+       of the split and simply emerges as the pair separates. */
+    var sp  = Math.max(0, Math.min(1, cur.split));
+    var spe = sp * sp * (3 - 2 * sp);
+    var GAP = 1.35;
+    if (spe > 0.001) { oA = 1; oB = 1; }
+    var solid = spe > 0.001;
+    if (canA) {
+      canA.spinner.rotation.y = cur.rot; setCanOpacity(canA, oA, solid);
+      canA.group.position.x = -GAP * spe;
+      /* sit just behind can B while they're concentric so B cleanly hides A at
+         the start of the split (no z-fighting); negligible once separated. */
+      canA.group.position.z = solid ? -0.04 : 0;
+    }
+    if (canB) {
+      canB.spinner.rotation.y = cur.rot; setCanOpacity(canB, oB, solid);
+      canB.group.position.x =  GAP * spe;
+    }
     if (bgGreen) bgGreen.style.opacity = se.toFixed(3);
 
     renderer.render(scene, camera);

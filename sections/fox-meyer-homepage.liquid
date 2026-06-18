@@ -125,6 +125,33 @@
       </div>
     </section>
 
+    <!-- Recipe — Petite Grenouille -->
+    <section id="fm-recette-pg" class="fm-section">
+      <div class="fm-panel fm-reveal">
+        <p class="fm-eyebrow">{{ section.settings.recipe_pg_eyebrow }}</p>
+        <h2 class="fm-h2">{{ section.settings.recipe_pg_heading }}</h2>
+        <div class="fm-recipe">
+          <div class="fm-spec">
+            <div class="fm-num">{{ section.settings.recipe_pg_water_value }}<span>{{ section.settings.recipe_pg_water_unit }}</span></div>
+            <div class="fm-lab">{{ section.settings.recipe_pg_water_label }}</div>
+          </div>
+          <div class="fm-spec">
+            <div class="fm-num">{{ section.settings.recipe_pg_dose_value }}<span>{{ section.settings.recipe_pg_dose_unit }}</span></div>
+            <div class="fm-lab">{{ section.settings.recipe_pg_dose_label }}</div>
+          </div>
+          <div class="fm-spec">
+            <div class="fm-num">{{ section.settings.recipe_pg_yield_value }}<span>{{ section.settings.recipe_pg_yield_unit }}</span></div>
+            <div class="fm-lab">{{ section.settings.recipe_pg_yield_label }}</div>
+          </div>
+          <div class="fm-spec">
+            <div class="fm-num">{{ section.settings.recipe_pg_time_value }}<span>{{ section.settings.recipe_pg_time_unit }}</span></div>
+            <div class="fm-lab">{{ section.settings.recipe_pg_time_label }}</div>
+          </div>
+        </div>
+        <p class="fm-copy">{{ section.settings.recipe_pg_note }}</p>
+      </div>
+    </section>
+
     <!-- Shop / CTA -->
     <section id="fm-acheter" class="fm-section">
       <div class="fm-cta-card fm-panel fm-panel-right fm-reveal">
@@ -425,6 +452,100 @@
       "id": "recipe_note",
       "label": "Note",
       "default": "A starting recipe, not a rule."
+    },
+    {
+      "type": "header",
+      "content": "Recipe Section — Petite Grenouille"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_eyebrow",
+      "label": "Eyebrow",
+      "default": "The recipe"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_heading",
+      "label": "Heading",
+      "default": "Measure. Brew. Repeat."
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_water_value",
+      "label": "Water — value",
+      "default": "89"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_water_unit",
+      "label": "Water — unit",
+      "default": "°C"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_water_label",
+      "label": "Water — label",
+      "default": "Water"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_dose_value",
+      "label": "Dose — value",
+      "default": "19"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_dose_unit",
+      "label": "Dose — unit",
+      "default": "g"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_dose_label",
+      "label": "Dose — label",
+      "default": "Dose"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_yield_value",
+      "label": "Yield — value",
+      "default": "36"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_yield_unit",
+      "label": "Yield — unit",
+      "default": "g"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_yield_label",
+      "label": "Yield — label",
+      "default": "Yield"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_time_value",
+      "label": "Time — value",
+      "default": "30"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_time_unit",
+      "label": "Time — unit",
+      "default": "s"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_time_label",
+      "label": "Time — label",
+      "default": "Time"
+    },
+    {
+      "type": "text",
+      "id": "recipe_pg_note",
+      "label": "Note",
+      "default": "A baseline, not a boundary."
     },
     {
       "type": "header",
