@@ -1,0 +1,6 @@
+# macOS Finder metadata (created automatically, esp. in Google Drive folders)
+.DS_Store
+**/.DS_Store
+
+# Shopify CLI
+.shopify/
