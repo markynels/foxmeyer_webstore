@@ -1,9 +1,53 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "layout": "fox-meyer",
   "sections": {
     "about": {
       "type": "fox-meyer-about",
       "settings": {
+        "shop_link": "",
+        "hero_eyebrow": "Our story",
+        "hero_heading": "Who is Fox Meyer?",
+        "hero_sub": "A small family, a master roaster, and one stubborn belief — that everyone, everywhere, deserves coffee exactly as it was meant to taste.",
+        "hero_image_placeholder": "Hero image — Marc, Massilia & Armando",
+        "people_eyebrow": "The people behind the can",
+        "people_heading": "Three people, one obsession.",
+        "person_1_name": "Massilia",
+        "person_1_role": "Co-founder",
+        "person_1_bio": "Marc’s wife and Fox Meyer’s other half. The eye for detail behind everything from the cans on the shelf to the cats fed on the way home.",
+        "person_2_name": "Marc",
+        "person_2_role": "Co-founder",
+        "person_2_bio": "Coffee-obsessed and endlessly curious about improving great coffee's reach. He went looking for a way to bring roast-day freshness to people all around the world, and found it in the can.",
+        "person_3_name": "Armando",
+        "person_3_role": "Master roaster",
+        "person_3_bio": "More than our roaster, our friend. He brings more than 30 years coaxing the best out of competition-grade beans. Every batch passes through his hands.",
+        "mission_eyebrow": "Why the can",
+        "mission_heading": "Freshness that travels — and waits.",
+        "mission_intro": "We sought out packaging that truly protects coffee. Nitrogen-sealed in aluminium, every can holds roast-day flavour against light, air and time. That single decision changes two things.",
+        "point_1_icon": "globe",
+        "point_1_title": "Reach",
+        "point_1_body": "Geography stops mattering. Sealed at its peak, the coffee survives the journey so anyone, anywhere in the world, can enjoy it exactly as it’s meant to be.",
+        "point_2_icon": "clock",
+        "point_2_title": "No spoilage",
+        "point_2_body": "Life gets in the way, and that’s fine. A pause in your coffee routine never costs you quality — the can simply waits. Open it and go whenever you’re ready.",
+        "passion_eyebrow": "Fun & passion",
+        "passion_heading": "We have soft spot for cuddly creatures.",
+        "passion_body": "When we’re not chasing the perfect cup, you’ll find us feeding the neighbourhood cats and hunting down the most unusual plushies we can get our hands on. That warmth is baked into the brand.",
+        "passion_quote": "Fun fact: Petite Grenouille is named after a little frog Marc has kept since he was a baby — still on the shelf today.",
+        "passion_image_placeholder": "Image — cats, plushies & Petite Grenouille",
+        "cta_heading": "Taste what we built.",
+        "cta_sub": "Two cans, nitrogen-sealed at their peak. Coffee, exactly as it should be.",
+        "cta_button_label": "Shop the cans",
+        "footer_legal": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans (Brazil & Colombia). Recycle where facilities exist.",
+        "footer_copyright": "© 2026 Fox Meyer®. All rights reserved."
       }
     }
   },
