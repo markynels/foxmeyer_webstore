@@ -208,7 +208,7 @@
   /* ---------- animation state ---------- */
   var target = { x: 0, y: heroDrop, zoom: 0, tilt: 0, rot: FRONT, swap: 0, split: 0 };
   var cur    = { x: 0, y: heroDrop, zoom: 0, tilt: 0, rot: FRONT, swap: 0, split: 0 };
-  var footerEl = document.querySelector('.fm-footer');
+  var exitEl = document.getElementById('fm-about') || document.querySelector('.fm-footer');
   frame();
   window.addEventListener('resize', frame, { passive: true });
   window.addEventListener('scroll', measure, { passive: true });
@@ -256,22 +256,24 @@
        enabled (previously this branch froze the can high over the text). */
     var bob = reduced ? 0 : Math.sin(t * 1.1) * 0.06;
 
-    /* Footer guard: once the footer scrolls up into view, carry the cans up with
-       it (1:1 with the scroll) so they stop above the footer instead of floating
-       over it. The pixel→world conversion keeps the motion locked to the page. */
-    var footerPush = 0;
-    if (footerEl) {
-      var fTop  = footerEl.getBoundingClientRect().top;       // px from viewport top
-      var enter = window.innerHeight - fTop;                  // px the footer has risen into view
+    /* Exit guard: once we scroll past the Shop card (the "Who is Fox Meyer?"
+       teaser rising into view), carry the cans up 1:1 with the scroll so they
+       leave with the Shop section instead of floating behind the about teaser
+       and footer. The same progress fades the green backdrop back to plum. */
+    var exitPush = 0, exitProg = 0;
+    if (exitEl) {
+      var eTop  = exitEl.getBoundingClientRect().top;         // px from viewport top
+      var enter = window.innerHeight - eTop;                  // px it has risen into view
       if (enter > 0) {
         var dist       = CAM_Z - cur.zoom;                    // camera → can-plane distance
         var worldPerPx = (2 * dist * Math.tan((camera.fov * Math.PI / 180) / 2)) / window.innerHeight;
-        footerPush     = enter * worldPerPx;
+        exitPush       = enter * worldPerPx;
+        exitProg       = Math.min(1, enter / (window.innerHeight * 0.8));
       }
     }
 
     rig.position.x = cur.x;
-    rig.position.y = baseY + cur.y + bob + footerPush;
+    rig.position.y = baseY + cur.y + bob + exitPush;
     rig.rotation.z = cur.tilt;
     rig.rotation.x = reduced ? 0.05 : 0.05 + Math.sin(t * 0.7) * 0.012;
     camera.position.z = CAM_Z - cur.zoom;
@@ -302,7 +304,7 @@
       canB.spinner.rotation.y = cur.rot; setCanOpacity(canB, oB, solid);
       canB.group.position.x =  GAP * spe;
     }
-    if (bgGreen) bgGreen.style.opacity = se.toFixed(3);
+    if (bgGreen) bgGreen.style.opacity = (se * (1 - exitProg)).toFixed(3);
 
     renderer.render(scene, camera);
   }

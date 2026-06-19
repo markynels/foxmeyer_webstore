@@ -218,6 +218,20 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 .fm-tiers strong { color: var(--cream); font-weight: 600; }
 .fm-cta-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
+/* about teaser — sits below the shop card, above the footer */
+.fm-section.fm-about-teaser {
+  flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; min-height: auto;
+  padding-top: clamp(80px,12vh,150px); padding-bottom: clamp(80px,12vh,150px);
+}
+.fm-about-inner { max-width: 700px; }
+.fm-about-title {
+  font-family: var(--display); font-weight: 800; text-transform: uppercase;
+  line-height: .92; letter-spacing: .005em;
+  font-size: clamp(52px,8.5vw,116px); margin-bottom: 20px;
+}
+.fm-about-copy { margin: 0 auto 30px; max-width: 48ch; }
+
 /* footer */
 .fm-footer {
   position: relative; z-index: 10;

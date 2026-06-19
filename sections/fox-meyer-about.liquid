@@ -1,0 +1,215 @@
+{%- comment -%}
+  Fox Meyer — About / Our story page. Shares the branded store header, footer
+  and stylesheet so it matches the homepage and Shop hub. Shop + Cart persist
+  via the fox-meyer-header snippet.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@600;700;800&display=swap">
+{{ 'fox-meyer-store.css' | asset_url | stylesheet_tag }}
+
+<div class="fms">
+  {% render 'fox-meyer-header', shop_url: section.settings.shop_link %}
+
+  <div class="fms-wrap">
+
+    <!-- Hero -->
+    <section class="fms-container fms-section fms-hero fms-about-hero">
+      <p class="fms-eyebrow">{{ section.settings.hero_eyebrow }}</p>
+      <h1 class="fms-h1">{{ section.settings.hero_heading }}</h1>
+      {%- if section.settings.hero_sub != blank -%}
+        <p class="fms-lead fms-center">{{ section.settings.hero_sub }}</p>
+      {%- endif -%}
+    </section>
+
+    <!-- Hero image -->
+    <section class="fms-container fms-section" style="padding-top:0">
+      {%- if section.settings.hero_image != blank -%}
+        <img class="fms-about-figure"
+          src="{{ section.settings.hero_image | image_url: width: 1800 }}"
+          srcset="{{ section.settings.hero_image | image_url: width: 800 }} 800w,
+                  {{ section.settings.hero_image | image_url: width: 1200 }} 1200w,
+                  {{ section.settings.hero_image | image_url: width: 1800 }} 1800w"
+          sizes="(max-width: 1180px) 100vw, 1100px"
+          width="{{ section.settings.hero_image.width }}"
+          height="{{ section.settings.hero_image.height }}"
+          alt="{{ section.settings.hero_image.alt | default: 'Marc, Massilia and Armando' | escape }}"
+          loading="lazy">
+      {%- else -%}
+        <div class="fms-ph fms-ph-hero">
+          <span>{{ section.settings.hero_image_placeholder }}</span>
+        </div>
+      {%- endif -%}
+    </section>
+
+    <!-- The people -->
+    <section class="fms-container fms-section" id="people">
+      <p class="fms-eyebrow fms-center">{{ section.settings.people_eyebrow }}</p>
+      <h2 class="fms-h2 fms-center" style="margin-bottom:48px">{{ section.settings.people_heading }}</h2>
+      <div class="fms-people">
+        {%- for i in (1..3) -%}
+          {%- assign nm = 'person_' | append: i | append: '_name' -%}
+          {%- assign rl = 'person_' | append: i | append: '_role' -%}
+          {%- assign bo = 'person_' | append: i | append: '_bio' -%}
+          {%- assign im = 'person_' | append: i | append: '_image' -%}
+          {%- assign img = section.settings[im] -%}
+          {%- if section.settings[nm] != blank -%}
+            <figure class="fms-person">
+              <div class="fms-person-media">
+                {%- if img != blank -%}
+                  <img src="{{ img | image_url: width: 640 }}"
+                       width="{{ img.width }}" height="{{ img.height }}"
+                       alt="{{ img.alt | default: section.settings[nm] | escape }}" loading="lazy">
+                {%- else -%}
+                  <div class="fms-ph fms-ph-person"><span>{{ section.settings[nm] }}</span></div>
+                {%- endif -%}
+              </div>
+              <figcaption>
+                <h3 class="fms-person-name">{{ section.settings[nm] }}</h3>
+                <p class="fms-person-role">{{ section.settings[rl] }}</p>
+                <p class="fms-person-bio">{{ section.settings[bo] }}</p>
+              </figcaption>
+            </figure>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+
+    <!-- Why the can / mission -->
+    <section class="fms-container fms-section" id="mission" style="padding-top:0">
+      <p class="fms-eyebrow fms-center">{{ section.settings.mission_eyebrow }}</p>
+      <h2 class="fms-h2 fms-center">{{ section.settings.mission_heading }}</h2>
+      {%- if section.settings.mission_intro != blank -%}
+        <p class="fms-lead fms-center" style="margin:18px auto 0">{{ section.settings.mission_intro }}</p>
+      {%- endif -%}
+      <div class="fms-about-cols">
+        {%- for i in (1..2) -%}
+          {%- assign t = 'point_' | append: i | append: '_title' -%}
+          {%- assign b = 'point_' | append: i | append: '_body' -%}
+          {%- assign ic = 'point_' | append: i | append: '_icon' -%}
+          {%- assign icon = section.settings[ic] -%}
+          <div class="fms-value">
+            <div class="fms-value-ic">
+              {%- case icon -%}
+                {%- when 'globe' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18" stroke-linecap="round"/></svg>
+                {%- when 'clock' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {%- when 'leaf' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 4S8 4 6 12c-1 5 3 8 3 8M20 4c0 8-5 11-10 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {%- when 'nitrogen' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="3" width="10" height="18" rx="3"/><path d="M7 8h10" stroke-linecap="round"/></svg>
+                {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              {%- endcase -%}
+            </div>
+            <h3>{{ section.settings[t] }}</h3>
+            <p>{{ section.settings[b] }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+    </section>
+
+    <!-- Fun & passion -->
+    <section class="fms-container fms-section" id="passion" style="padding-top:0">
+      <div class="fms-passion">
+        <div class="fms-passion-media">
+          {%- if section.settings.passion_image != blank -%}
+            <img src="{{ section.settings.passion_image | image_url: width: 1000 }}"
+                 width="{{ section.settings.passion_image.width }}" height="{{ section.settings.passion_image.height }}"
+                 alt="{{ section.settings.passion_image.alt | default: 'Fox Meyer' | escape }}" loading="lazy">
+          {%- else -%}
+            <div class="fms-ph fms-ph-passion"><span>{{ section.settings.passion_image_placeholder }}</span></div>
+          {%- endif -%}
+        </div>
+        <div class="fms-passion-copy">
+          <p class="fms-eyebrow">{{ section.settings.passion_eyebrow }}</p>
+          <h2 class="fms-h2">{{ section.settings.passion_heading }}</h2>
+          <p class="fms-passion-body">{{ section.settings.passion_body }}</p>
+          {%- if section.settings.passion_quote != blank -%}
+            <blockquote class="fms-passion-quote">{{ section.settings.passion_quote }}</blockquote>
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA back to shop -->
+    <section class="fms-container fms-section" id="about-cta">
+      <div class="fms-about-band">
+        <h2 class="fms-h2">{{ section.settings.cta_heading }}</h2>
+        {%- if section.settings.cta_sub != blank -%}
+          <p class="fms-lead fms-center" style="margin:14px auto 26px">{{ section.settings.cta_sub }}</p>
+        {%- endif -%}
+        <div class="fms-about-band-actions">
+          <a class="fms-btn fms-btn-orange" href="{{ section.settings.shop_link | default: '/pages/shop' }}">{{ section.settings.cta_button_label }}</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  {% render 'fox-meyer-footer', legal: section.settings.footer_legal, copyright: section.settings.footer_copyright %}
+</div>
+
+{% schema %}
+{
+  "name": "Fox Meyer About",
+  "settings": [
+    { "type": "header", "content": "Navigation" },
+    { "type": "url", "id": "shop_link", "label": "Shop link (header + CTA, defaults to /pages/shop)" },
+
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_eyebrow", "label": "Eyebrow", "default": "Our story" },
+    { "type": "text", "id": "hero_heading", "label": "Heading", "default": "Who is Fox Meyer?" },
+    { "type": "textarea", "id": "hero_sub", "label": "Subheading", "default": "A small family, a master roaster, and one stubborn belief — that everyone, everywhere, deserves coffee exactly as it was meant to taste." },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image (the three of us)" },
+    { "type": "text", "id": "hero_image_placeholder", "label": "Hero placeholder text", "default": "Hero image — Marc, Massilia & Armando" },
+
+    { "type": "header", "content": "The people" },
+    { "type": "text", "id": "people_eyebrow", "label": "Eyebrow", "default": "The people behind the can" },
+    { "type": "text", "id": "people_heading", "label": "Heading", "default": "Three people, one obsession." },
+
+    { "type": "image_picker", "id": "person_1_image", "label": "Person 1 — photo" },
+    { "type": "text", "id": "person_1_name", "label": "Person 1 — name", "default": "Massilia" },
+    { "type": "text", "id": "person_1_role", "label": "Person 1 — role", "default": "Co-founder" },
+    { "type": "textarea", "id": "person_1_bio", "label": "Person 1 — bio", "default": "Marc’s wife and Fox Meyer’s other half. The eye for detail behind everything from the cans on the shelf to the cats fed on the way home." },
+
+    { "type": "image_picker", "id": "person_2_image", "label": "Person 2 — photo" },
+    { "type": "text", "id": "person_2_name", "label": "Person 2 — name", "default": "Marc" },
+    { "type": "text", "id": "person_2_role", "label": "Person 2 — role", "default": "Co-founder" },
+    { "type": "textarea", "id": "person_2_bio", "label": "Person 2 — bio", "default": "Coffee-obsessed and endlessly curious about why most bags arrive past their best. He went looking for a way to keep roast-day freshness intact — and found it in the can." },
+
+    { "type": "image_picker", "id": "person_3_image", "label": "Person 3 — photo" },
+    { "type": "text", "id": "person_3_name", "label": "Person 3 — name", "default": "Armando" },
+    { "type": "text", "id": "person_3_role", "label": "Person 3 — role", "default": "Master roaster · Las Fincas" },
+    { "type": "textarea", "id": "person_3_bio", "label": "Person 3 — bio", "default": "Owner of Las Fincas and our roaster, with more than 30 years coaxing the best out of competition-grade beans. Every batch passes through his hands." },
+
+    { "type": "header", "content": "Why the can (mission)" },
+    { "type": "text", "id": "mission_eyebrow", "label": "Eyebrow", "default": "Why we built the can" },
+    { "type": "text", "id": "mission_heading", "label": "Heading", "default": "Freshness that travels — and waits." },
+    { "type": "textarea", "id": "mission_intro", "label": "Intro", "default": "We sought out packaging that truly protects coffee. Nitrogen-sealed in aluminium, every can holds roast-day flavour against light, air and time. That single decision changes two things." },
+    { "type": "select", "id": "point_1_icon", "label": "Point 1 — icon", "default": "globe", "options": [
+      { "value": "globe", "label": "Globe" }, { "value": "clock", "label": "Clock" }, { "value": "leaf", "label": "Leaf" }, { "value": "nitrogen", "label": "Can" }, { "value": "check", "label": "Check" } ] },
+    { "type": "text", "id": "point_1_title", "label": "Point 1 — title", "default": "Reach" },
+    { "type": "textarea", "id": "point_1_body", "label": "Point 1 — body", "default": "Geography stops mattering. Sealed at its peak, the coffee survives the journey — so anyone, anywhere in the world, can enjoy it exactly as it’s meant to be." },
+    { "type": "select", "id": "point_2_icon", "label": "Point 2 — icon", "default": "clock", "options": [
+      { "value": "globe", "label": "Globe" }, { "value": "clock", "label": "Clock" }, { "value": "leaf", "label": "Leaf" }, { "value": "nitrogen", "label": "Can" }, { "value": "check", "label": "Check" } ] },
+    { "type": "text", "id": "point_2_title", "label": "Point 2 — title", "default": "No spoilage" },
+    { "type": "textarea", "id": "point_2_body", "label": "Point 2 — body", "default": "Life gets in the way, and that’s fine. A pause in your coffee routine never costs you quality — the can simply waits. Open it and go whenever you’re ready." },
+
+    { "type": "header", "content": "Fun & passion" },
+    { "type": "text", "id": "passion_eyebrow", "label": "Eyebrow", "default": "Fun & passion" },
+    { "type": "text", "id": "passion_heading", "label": "Heading", "default": "We’re soft for cuddly creatures." },
+    { "type": "textarea", "id": "passion_body", "label": "Body", "default": "When we’re not chasing the perfect cup, you’ll find us feeding the neighbourhood cats and hunting down the most unusual plushies we can get our hands on. That warmth is baked into the brand." },
+    { "type": "textarea", "id": "passion_quote", "label": "Highlight quote", "default": "Petite Grenouille is named after a little frog Marc has kept since he was a baby — still on the shelf today." },
+    { "type": "image_picker", "id": "passion_image", "label": "Passion image" },
+    { "type": "text", "id": "passion_image_placeholder", "label": "Passion placeholder text", "default": "Image — cats, plushies & Petite Grenouille" },
+
+    { "type": "header", "content": "Closing CTA" },
+    { "type": "text", "id": "cta_heading", "label": "Heading", "default": "Taste what we built." },
+    { "type": "textarea", "id": "cta_sub", "label": "Subheading", "default": "Two cans, nitrogen-sealed at their peak. Coffee, exactly as it should be." },
+    { "type": "text", "id": "cta_button_label", "label": "Button label", "default": "Shop the cans" },
+
+    { "type": "header", "content": "Footer" },
+    { "type": "textarea", "id": "footer_legal", "label": "Legal text", "default": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans (Brazil & Colombia). Recycle where facilities exist." },
+    { "type": "text", "id": "footer_copyright", "label": "Copyright line", "default": "© 2026 Fox Meyer®. All rights reserved." }
+  ],
+  "presets": [ { "name": "Fox Meyer About" } ]
+}
+{% endschema %}

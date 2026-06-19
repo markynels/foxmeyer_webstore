@@ -1,0 +1,13 @@
+{
+  "layout": "fox-meyer",
+  "sections": {
+    "about": {
+      "type": "fox-meyer-about",
+      "settings": {
+      }
+    }
+  },
+  "order": [
+    "about"
+  ]
+}

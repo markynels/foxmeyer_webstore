@@ -367,6 +367,85 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 }
 .fms-toast.is-visible { transform: translate(-50%,0); }
 
+/* ---------------------------------------------------------------- about page */
+.fms-about-hero { padding-bottom: clamp(16px,2.5vw,28px); }
+
+/* image placeholders (shown until real photos are uploaded) */
+.fms-ph {
+  display: grid; place-items: center; text-align: center;
+  border: 1.5px dashed var(--cream-faint); border-radius: 24px;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(74,32,64,.55), rgba(29,12,25,.85));
+  color: var(--cream-dim);
+}
+.fms-ph span {
+  font-family: var(--display); font-weight: 600; font-size: clamp(13px,1.6vw,16px);
+  letter-spacing: .16em; text-transform: uppercase; padding: 16px 24px;
+}
+.fms-ph-hero { aspect-ratio: 16/8; }
+.fms-ph-person { aspect-ratio: 3/4; border-radius: 18px; }
+.fms-ph-passion { aspect-ratio: 4/5; }
+
+.fms-about-figure {
+  width: 100%; border-radius: 24px; border: 1.5px solid var(--cream-faint);
+  object-fit: cover; aspect-ratio: 16/8;
+}
+
+/* the people */
+.fms-people { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(18px,2.5vw,30px); }
+.fms-person {
+  border: 1.5px solid var(--cream-faint); border-radius: 24px; overflow: hidden;
+  background: rgba(36,16,32,.5);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: flex; flex-direction: column;
+}
+.fms-person-media { aspect-ratio: 3/4; overflow: hidden; background: rgba(29,12,25,.8); }
+.fms-person-media img { width: 100%; height: 100%; object-fit: cover; }
+.fms-person-media .fms-ph-person { border: 0; border-radius: 0; height: 100%; }
+.fms-person figcaption { padding: clamp(18px,2.2vw,24px); }
+.fms-person-name { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(24px,2.4vw,30px); line-height: 1; }
+.fms-person-role { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--orange); margin-top: 6px; }
+.fms-person-bio { font-size: 15px; line-height: 1.6; color: var(--cream-dim); margin-top: 12px; }
+
+/* mission two-up */
+.fms-about-cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(18px,3vw,40px); margin-top: clamp(34px,4vw,52px); }
+.fms-about-cols .fms-value {
+  text-align: left; border: 1.5px solid var(--cream-faint); border-radius: 20px;
+  padding: clamp(24px,3vw,34px); background: rgba(36,16,32,.45);
+}
+.fms-about-cols .fms-value-ic { margin: 0 0 16px; }
+.fms-about-cols .fms-value h3 { font-size: clamp(22px,2.4vw,28px); }
+.fms-about-cols .fms-value p { font-size: 16px; }
+
+/* fun & passion */
+.fms-passion { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(24px,4vw,56px); align-items: center; }
+.fms-passion-media img { width: 100%; border-radius: 24px; border: 1.5px solid var(--cream-faint); object-fit: cover; aspect-ratio: 4/5; }
+.fms-passion-copy .fms-h2 { margin-top: 6px; }
+.fms-passion-body { font-size: 17px; line-height: 1.7; color: var(--cream-dim); margin-top: 16px; }
+.fms-passion-quote {
+  margin-top: 22px; padding: 18px 22px; border-left: 3px solid var(--orange);
+  background: rgba(240,123,27,.08); border-radius: 0 14px 14px 0;
+  font-family: var(--display); font-weight: 600; font-size: clamp(18px,2vw,22px);
+  line-height: 1.4; color: var(--cream);
+}
+
+/* closing band */
+.fms-about-band {
+  text-align: center; border: 1.5px solid var(--cream-faint); border-radius: 24px;
+  padding: clamp(40px,6vw,72px) clamp(20px,5vw,48px);
+  background: rgba(36,16,32,.5);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.fms-about-band .fms-h2 { max-width: 18ch; margin: 0 auto; }
+.fms-about-band-actions { display: flex; justify-content: center; }
+.fms-about-band-actions .fms-btn { width: auto; min-width: 220px; }
+
+@media (max-width: 900px) {
+  .fms-people { grid-template-columns: 1fr; }
+  .fms-about-cols { grid-template-columns: 1fr; }
+  .fms-passion { grid-template-columns: 1fr; }
+}
+
 /* ---------------------------------------------------------------- footer */
 .fms-footer {
   position: relative; z-index: 1;

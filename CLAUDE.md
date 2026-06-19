@@ -20,6 +20,25 @@ The homepage was refactored from a single-page `index.html` design (Three.js 3D 
 
 The original `index.html` is kept as the design reference.
 
+Homepage notes:
+- A **"Who is Fox Meyer?" about teaser** sits at the bottom (`#fm-about`), below the Shop card and above the footer, linking to `/pages/about`.
+- The Three.js can animation lifts the cans away once you scroll past the Shop card (the exit guard is anchored to `#fm-about`), and the green backdrop fades back to plum over that same stretch.
+
+## Branded store pages
+The Shop hub, product page (PDP) and About page share one design system (mirrors the homepage: plum/cream/orange, Barlow Condensed). All are scoped under `.fms` and use the custom `fox-meyer` layout.
+
+| File | Role |
+|---|---|
+| `sections/fox-meyer-shop.liquid` | Shop hub — both cans, inline add-to-cart + Shop Pay, bundle tiers, why, reviews, FAQ |
+| `sections/fox-meyer-product.liquid` | Branded PDP |
+| `sections/fox-meyer-about.liquid` | About / "Who is Fox Meyer?" — the people (Massilia, Marc, Armando), the freshness mission, fun & passion, closing CTA. Image pickers fall back to dashed placeholders until photos are uploaded |
+| `assets/fox-meyer-store.css` | Shared stylesheet for Shop + PDP + About, scoped under `.fms` |
+| `assets/fox-meyer-store.js` | Shop/PDP cart + add-to-cart behaviour |
+| `snippets/fox-meyer-header.liquid`, `fox-meyer-footer.liquid`, `fox-meyer-product-card.liquid` | Shared header (Shop + Cart persist), footer, and product card |
+| `templates/page.shop.json`, `page.about.json`, `product.json` | Wire the Shop / About pages and product template to the custom layout + sections |
+
+Shopify Pages must exist with handles matching the template suffix for these to resolve: **shop** (`/pages/shop`, suffix `shop`) and **about** (`/pages/about`, suffix `about`). `url`-type schema settings can't default to `/pages/...` paths — leave the default off and apply the fallback in Liquid (`| default: '/pages/about'`).
+
 ## Editing workflow (IMPORTANT — follow every session)
 
 GitHub is the **source of truth**. The Shopify GitHub integration auto-deploys the connected branch to the theme, and auto-commits customizer changes back to the branch.

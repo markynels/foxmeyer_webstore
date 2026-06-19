@@ -193,6 +193,20 @@
       </div>
     </section>
 
+    <!-- Who is Fox Meyer? — about teaser -->
+    <section id="fm-about" class="fm-section fm-about-teaser">
+      <div class="fm-about-inner fm-reveal">
+        <p class="fm-eyebrow">{{ section.settings.about_eyebrow }}</p>
+        <h2 class="fm-about-title">{{ section.settings.about_heading }}</h2>
+        {%- if section.settings.about_copy != blank -%}
+          <p class="fm-copy fm-about-copy">{{ section.settings.about_copy }}</p>
+        {%- endif -%}
+        <a class="fm-btn fm-btn-orange" href="{{ section.settings.about_link | default: '/pages/about' }}">
+          {{ section.settings.about_button_label }}
+        </a>
+      </div>
+    </section>
+
   </main>
 
   <!-- Footer -->
@@ -213,6 +227,7 @@
         <a href="#fm-grenouille">{{ section.settings.grenouille_eyebrow }}</a>
         <a href="#fm-recette">{{ section.settings.recipe_eyebrow }}</a>
         <a href="#fm-acheter">{{ section.settings.cta_eyebrow }}</a>
+        <a href="{{ section.settings.about_link | default: '/pages/about' }}">{{ section.settings.about_eyebrow }}</a>
       </nav>
     </div>
     <p class="fm-fine" style="margin-top:34px">{{ section.settings.footer_copyright }}</p>
@@ -679,6 +694,39 @@
       "id": "cta_subscribe_label",
       "label": "Subscribe button label",
       "default": "Subscribe"
+    },
+    {
+      "type": "header",
+      "content": "About Teaser"
+    },
+    {
+      "type": "text",
+      "id": "about_eyebrow",
+      "label": "Eyebrow",
+      "default": "Our story"
+    },
+    {
+      "type": "text",
+      "id": "about_heading",
+      "label": "Heading",
+      "default": "Who is Fox Meyer?"
+    },
+    {
+      "type": "textarea",
+      "id": "about_copy",
+      "label": "Body copy",
+      "default": "A family, a roaster with thirty years in the trade, and one stubborn idea — that everyone, everywhere, deserves coffee exactly as it was meant to taste."
+    },
+    {
+      "type": "url",
+      "id": "about_link",
+      "label": "About page link (defaults to /pages/about)"
+    },
+    {
+      "type": "text",
+      "id": "about_button_label",
+      "label": "About button label",
+      "default": "Read our story"
     },
     {
       "type": "header",
