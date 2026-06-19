@@ -1,13 +1,16 @@
 {%- comment -%}
   Branded store header (matches the homepage). Usage:
     {% render 'fox-meyer-header', shop_url: '/pages/shop' %}
+  Pass on_shop: true to hide the redundant Shop link when already on the Shop page.
 {%- endcomment -%}
 <header class="fms-header">
   <a class="fms-wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
     <img src="{{ 'fox-meyer-logo.png' | asset_url }}" alt="{{ shop.name }}" width="120" height="28">
   </a>
   <nav class="fms-nav" aria-label="Primary">
-    <a class="fms-header-btn" href="{{ shop_url | default: '/pages/shop' }}">Shop</a>
+    {%- unless on_shop -%}
+      <a class="fms-header-btn" href="{{ shop_url | default: '/pages/shop' }}">Shop</a>
+    {%- endunless -%}
     <a class="fms-cart-link" href="{{ routes.cart_url }}" data-open-cart aria-label="Open cart">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
         <path d="M6 7h12l-1 13H7L6 7Z" stroke-linejoin="round"/>

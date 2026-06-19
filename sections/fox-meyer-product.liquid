@@ -52,7 +52,7 @@
         <div class="fms-pdp-sub">{{ section.settings.sub_label | default: product.vendor }}</div>
         <h1 class="fms-pdp-title">{{ product.title }}</h1>
 
-        {%- if section.settings.rating != blank -%}
+        {%- if section.settings.show_ratings and section.settings.rating != blank -%}
           <div class="fms-rating">
             <span class="fms-stars" aria-hidden="true">★★★★★</span>
             <span class="fms-rating-text">{{ section.settings.rating }}{% if section.settings.rating_count != blank %} · {{ section.settings.rating_count }} reviews{% endif %}</span>
@@ -94,22 +94,30 @@
           {%- else -%}
             <button type="button" class="fms-btn fms-btn-orange" disabled>Sold out</button>
           {%- endif -%}
-          <p class="fms-ship-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            {{ section.settings.ship_note }}
-          </p>
         {%- endform -%}
 
         <hr class="fms-divider">
 
         <!-- Recipe -->
         {%- if section.settings.show_recipe -%}
+          {%- comment -%} Per-product recipe: both cans share this template, so pick the Grenouille values by handle {%- endcomment -%}
+          {%- if product.handle contains 'grenouille' -%}
+            {%- assign r_water = section.settings.g_recipe_water -%}
+            {%- assign r_dose = section.settings.g_recipe_dose -%}
+            {%- assign r_yield = section.settings.g_recipe_yield -%}
+            {%- assign r_time = section.settings.g_recipe_time -%}
+          {%- else -%}
+            {%- assign r_water = section.settings.recipe_water -%}
+            {%- assign r_dose = section.settings.recipe_dose -%}
+            {%- assign r_yield = section.settings.recipe_yield -%}
+            {%- assign r_time = section.settings.recipe_time -%}
+          {%- endif -%}
           <p class="fms-eyebrow" style="margin-bottom:8px">{{ section.settings.recipe_eyebrow }}</p>
           <div class="fms-recipe">
-            <div><div class="fms-num">{{ section.settings.recipe_water }}<span>°C</span></div><div class="fms-lab">Water</div></div>
-            <div><div class="fms-num">{{ section.settings.recipe_dose }}<span>g</span></div><div class="fms-lab">Dose</div></div>
-            <div><div class="fms-num">{{ section.settings.recipe_yield }}<span>g</span></div><div class="fms-lab">Yield</div></div>
-            <div><div class="fms-num">{{ section.settings.recipe_time }}<span>s</span></div><div class="fms-lab">Time</div></div>
+            <div><div class="fms-num">{{ r_water }}<span>°C</span></div><div class="fms-lab">Water</div></div>
+            <div><div class="fms-num">{{ r_dose }}<span>g</span></div><div class="fms-lab">Dose</div></div>
+            <div><div class="fms-num">{{ r_yield }}<span>g</span></div><div class="fms-lab">Yield</div></div>
+            <div><div class="fms-num">{{ r_time }}<span>s</span></div><div class="fms-lab">Time</div></div>
           </div>
         {%- endif -%}
       </div>
@@ -122,24 +130,6 @@
         <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="14" r="6"/><path d="M9 3l3 6 3-6" stroke-linejoin="round"/></svg></div><h3>Competition-grade</h3><p>{{ section.settings.why_2 }}</p></div>
         <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h11v9H2zM13 10h5l3 3v3h-8z" stroke-linejoin="round"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></div><h3>Ships in 1–2 days</h3><p>{{ section.settings.why_3 }}</p></div>
         <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>100-day guarantee</h3><p>{{ section.settings.why_4 }}</p></div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="fms-container fms-section" id="faq" style="padding-top:0">
-      <p class="fms-eyebrow fms-center">{{ section.settings.faq_eyebrow }}</p>
-      <h2 class="fms-h2 fms-center" style="margin-bottom:40px">{{ section.settings.faq_heading }}</h2>
-      <div class="fms-faq">
-        {%- for i in (1..4) -%}
-          {%- assign q = 'faq_' | append: i | append: '_q' -%}
-          {%- assign a = 'faq_' | append: i | append: '_a' -%}
-          {%- if section.settings[q] != blank -%}
-            <details {% if i == 1 %}open{% endif %}>
-              <summary>{{ section.settings[q] }}</summary>
-              <div class="fms-faq-a">{{ section.settings[a] }}</div>
-            </details>
-          {%- endif -%}
-        {%- endfor -%}
       </div>
     </section>
   </div>
@@ -166,12 +156,14 @@
     { "type": "text", "id": "unit_label", "label": "Unit label beside price", "default": "CAD · 150 g whole bean" },
     { "type": "text", "id": "spec_chips", "label": "Spec chips (separate with | )", "default": "150 g · Whole bean | Nitrogen-flushed | SCA 86+ | Recyclable aluminium" },
     { "type": "number", "id": "free_ship_qty", "label": "Free-shipping threshold (cans)", "default": 4 },
-    { "type": "text", "id": "ship_note", "label": "Reassurance under buy buttons", "default": "Roast-fresh · Ships in 1–2 days · 100-day freshness guarantee" },
     { "type": "textarea", "id": "fallback_desc", "label": "Description fallback (if product has none)", "default": "Competition-grade beans, small-batch roasted in Dorval and nitrogen-sealed in aluminium for roast-day freshness in every cup." },
+
+    { "type": "header", "content": "Ratings" },
+    { "type": "checkbox", "id": "show_ratings", "label": "Show star rating + review count", "info": "Off until real reviews exist. The values below are kept for when you turn it on.", "default": false },
     { "type": "text", "id": "rating", "label": "Rating value", "default": "4.9" },
     { "type": "text", "id": "rating_count", "label": "Rating count", "default": "127" },
 
-    { "type": "header", "content": "Recipe" },
+    { "type": "header", "content": "Recipe — Fox Meyer (default)" },
     { "type": "checkbox", "id": "show_recipe", "label": "Show recipe", "default": true },
     { "type": "text", "id": "recipe_eyebrow", "label": "Eyebrow", "default": "A starting recipe" },
     { "type": "text", "id": "recipe_water", "label": "Water °C", "default": "90" },
@@ -179,23 +171,17 @@
     { "type": "text", "id": "recipe_yield", "label": "Yield g", "default": "36" },
     { "type": "text", "id": "recipe_time", "label": "Time s", "default": "32" },
 
+    { "type": "header", "content": "Recipe — Petite Grenouille", "info": "Used only on the Petite Grenouille page." },
+    { "type": "text", "id": "g_recipe_water", "label": "Water °C", "default": "89" },
+    { "type": "text", "id": "g_recipe_dose", "label": "Dose g", "default": "19" },
+    { "type": "text", "id": "g_recipe_yield", "label": "Yield g", "default": "36" },
+    { "type": "text", "id": "g_recipe_time", "label": "Time s", "default": "30" },
+
     { "type": "header", "content": "Why Fox Meyer (trust row)" },
     { "type": "textarea", "id": "why_1", "label": "Nitrogen-sealed", "default": "No oxygen, no light — roast-day flavour, locked in." },
     { "type": "textarea", "id": "why_2", "label": "Competition-grade", "default": "SCA 86+ beans, small-batch roasted in Québec." },
     { "type": "textarea", "id": "why_3", "label": "Fast shipping", "default": "Roasted to order, shipped from Dorval in 1–2 days." },
     { "type": "textarea", "id": "why_4", "label": "Guarantee", "default": "Don’t love it within 100 days? We’ll make it right." },
-
-    { "type": "header", "content": "FAQ" },
-    { "type": "text", "id": "faq_eyebrow", "label": "Eyebrow", "default": "Good to know" },
-    { "type": "text", "id": "faq_heading", "label": "Heading", "default": "Questions, answered." },
-    { "type": "text", "id": "faq_1_q", "label": "Q1", "default": "How fresh is it?" },
-    { "type": "textarea", "id": "faq_1_a", "label": "A1", "default": "Roasted after you order and nitrogen-sealed within hours. Sealed, it stays at peak for up to 12 months — backed by our 100-day freshness guarantee." },
-    { "type": "text", "id": "faq_2_q", "label": "Q2", "default": "Whole bean or ground?" },
-    { "type": "textarea", "id": "faq_2_a", "label": "A2", "default": "Whole bean only — 150 g, about 18–20 espressos. Grinding fresh is the biggest single upgrade to your cup." },
-    { "type": "text", "id": "faq_3_q", "label": "Q3", "default": "Shipping & delivery?" },
-    { "type": "textarea", "id": "faq_3_a", "label": "A3", "default": "Ships from Dorval, Québec within 1–2 business days; most of Canada arrives in 2–5. Free shipping on 4 cans or more." },
-    { "type": "text", "id": "faq_4_q", "label": "Q4", "default": "How do I pay?" },
-    { "type": "textarea", "id": "faq_4_a", "label": "A4", "default": "Card, or one tap with Shop Pay, Apple Pay and Google Pay via the express button above — no address typing required." },
 
     { "type": "header", "content": "Footer" },
     { "type": "textarea", "id": "footer_legal", "label": "Legal text", "default": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans. Recycle where facilities exist." },

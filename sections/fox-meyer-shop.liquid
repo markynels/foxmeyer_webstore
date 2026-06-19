@@ -21,7 +21,7 @@
 {%- assign p2 = section.settings.product_2 | default: all_products['petite-grenouille'] -%}
 
 <div class="fms">
-  {% render 'fox-meyer-header', shop_url: request.path %}
+  {% render 'fox-meyer-header', shop_url: request.path, on_shop: true %}
 
   <div class="fms-wrap">
 
@@ -53,6 +53,7 @@
           chip_1: section.settings.p1_chip_1,
           chip_2: section.settings.p1_chip_2,
           chip_3: section.settings.p1_chip_3,
+          show_rating: section.settings.show_ratings,
           rating: section.settings.p1_rating,
           rating_count: section.settings.p1_rating_count,
           ship_note: section.settings.ship_note %}
@@ -67,6 +68,7 @@
           chip_1: section.settings.p2_chip_1,
           chip_2: section.settings.p2_chip_2,
           chip_3: section.settings.p2_chip_3,
+          show_rating: section.settings.show_ratings,
           rating: section.settings.p2_rating,
           rating_count: section.settings.p2_rating_count,
           ship_note: section.settings.ship_note %}
@@ -95,7 +97,7 @@
     </section>
 
     <!-- Why Fox Meyer -->
-    <section class="fms-container fms-section" id="why">
+    <section class="fms-container fms-section" id="why" style="padding-top:0">
       <p class="fms-eyebrow fms-center">{{ section.settings.why_eyebrow }}</p>
       <h2 class="fms-h2 fms-center" style="margin-bottom:48px">{{ section.settings.why_heading }}</h2>
       <div class="fms-values">
@@ -132,7 +134,7 @@
           {%- assign n = 'review_' | append: i | append: '_name' -%}
           {%- if section.settings[q] != blank -%}
             <figure class="fms-review">
-              <div class="fms-stars" aria-hidden="true">★★★★★</div>
+              {%- if section.settings.show_ratings -%}<div class="fms-stars" aria-hidden="true">★★★★★</div>{%- endif -%}
               <blockquote>{{ section.settings[q] }}</blockquote>
               <cite>{{ section.settings[n] }}</cite>
             </figure>
@@ -233,6 +235,9 @@
     { "type": "text", "id": "why_4_title", "label": "Title 4", "default": "Endlessly recyclable" },
     { "type": "textarea", "id": "why_4_body", "label": "Body 4", "default": "Aluminium is infinitely recyclable — unlike most foil coffee bags. Better cup, lighter footprint." },
 
+    { "type": "header", "content": "Ratings" },
+    { "type": "checkbox", "id": "show_ratings", "label": "Show star rating + review count", "info": "Off until real reviews exist. Controls the rating on each can card and the stars on testimonials. The values below are kept for when you turn it on.", "default": false },
+
     { "type": "header", "content": "Reviews / social proof" },
     { "type": "checkbox", "id": "show_reviews", "label": "Show reviews section", "default": true },
     { "type": "text", "id": "reviews_eyebrow", "label": "Eyebrow", "default": "Loved by" },
@@ -250,7 +255,7 @@
     { "type": "text", "id": "faq_1_q", "label": "Q1", "default": "How fresh is it, really?" },
     { "type": "textarea", "id": "faq_1_a", "label": "A1", "default": "We roast after you order and nitrogen-seal each can within hours. Sealed, it stays at peak for up to 12 months — and we back it with a 100-day freshness guarantee." },
     { "type": "text", "id": "faq_2_q", "label": "Q2", "default": "Whole bean or ground?" },
-    { "type": "textarea", "id": "faq_2_a", "label": "A2", "default": "Every can ships as whole bean to protect freshness — 150 g, about 18–20 espressos. Grinding fresh is the single biggest upgrade to your cup." },
+    { "type": "textarea", "id": "faq_2_a", "label": "A2", "default": "Every can ships as whole bean to protect freshness — 150 g, about 7–8 espressos. Grinding fresh is the single biggest upgrade to your cup." },
     { "type": "text", "id": "faq_3_q", "label": "Q3", "default": "When will it arrive?" },
     { "type": "textarea", "id": "faq_3_a", "label": "A3", "default": "Orders ship from Dorval, Québec within 1–2 business days. Most of Canada arrives in 2–5 business days. Shipping is free on orders of 4 cans or more." },
     { "type": "text", "id": "faq_4_q", "label": "Q4", "default": "What if I don’t love it?" },

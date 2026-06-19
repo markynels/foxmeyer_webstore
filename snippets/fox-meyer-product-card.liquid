@@ -8,6 +8,7 @@
     notes          (string)            — tasting-notes eyebrow (e.g. "Brazil · Colombia")
     desc           (string)            — one-line description
     chip_1/2/3     (string)            — tasting / spec chips
+    show_rating    (boolean)           — master toggle for the star rating + review count
     rating         (string)            — e.g. "4.9"
     rating_count   (string)            — e.g. "127"
     ship_note      (string)            — reassurance line under the buy buttons
@@ -33,7 +34,7 @@
         <div class="fms-price">{{ v.price | money }}<small>CAD · 150 g</small></div>
       </div>
 
-      {%- if rating != blank -%}
+      {%- if show_rating and rating != blank -%}
         <div class="fms-rating">
           <span class="fms-stars" aria-hidden="true">★★★★★</span>
           <span class="fms-rating-text">{{ rating }}{% if rating_count != blank %} · {{ rating_count }} reviews{% endif %}</span>
