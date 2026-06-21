@@ -2,9 +2,61 @@
 
 Shopify storefront for Fox Meyer — specialty coffee (roasted in Dorval, Québec; nitrogen-sealed cans). Dawn-based theme. Store: `fox-meyer.myshopify.com`.
 
-## Products
-- **Fox Meyer** — $12 CAD, 150g can
-- **Petite Grenouille** — $14 CAD, 150g can
+## Product model (DTC) — source of truth
+
+> Decided June 2026 (`Fox_Meyer_Decisions_Summary_for_ClaudeCode.md`). This **supersedes** any earlier per-can / cart-tier-threshold logic. The current store code still reflects the old model — see "Migration" below.
+
+**The core of the business model is the two box formats.** DTC sells exactly two products — a **4-Can Box** and an **8-Can Box**. **No single cans on the DTC store.** Single cans still exist, but only through retail/wholesale placements (e.g. a boutique shelf); they are not a storefront SKU and must not appear on foxmeyer.co.
+
+**Launch = one-time sales only. Subscriptions are deliberately deferred** (see "Subscriptions — deferred").
+
+- **4-Can Box** — mix-and-match, free shipping. Merchandise as *the way to meet the brand* ("try both", default 2 Fox + 2 Grenouille — frame as a sampler, not "bulk").
+- **8-Can Box** — mix-and-match, free shipping, **includes a collectible musette** (bundled automatically, no separate charge, not a standalone SKU; rotating seasonal editions in Year 2+, one edition at launch).
+- **Box builder:** customer chooses any split of the two coffees per box (4-can: 4×Fox, 2+2, 3+1…; 8-can: any split summing to 8).
+
+### The two coffees (what goes in the boxes)
+- **Fox Meyer** (orange fox) — $12.00 CAD/can reference, 150g can. GTIN 627146 20510 8. Brazil + Colombia, SCA 86+, medium-dark. Notes: velvety caramel, dark cocoa, toasted almond.
+- **Petite Grenouille** (green frog) — $14.00 CAD/can reference, 150g can. GTIN 627146 20506 1. Brazil + India + Guatemala, SCA 86+, medium-dark. Notes: rich molasses, dark cocoa, toasted almond, walnut finish.
+
+### Pricing & shipping
+- Box price = **sum of chosen cans** at per-can reference ($12 / $14). 4-can box ranges $48–$56; 8-can box ranges $96–$112, depending on the Fox/Grenouille split.
+- **Pricing is provisional** — the per-can references and box totals may move once real packaging/vendor costs land (box cost is a placeholder, see Open flags). Build pricing so it's easy to adjust; don't hardcode totals where a can-sum will do.
+- **No cart-level percentage discounts** at any size.
+- **Both boxes ship free, always.** There is **no** free-shipping threshold (every DTC order is already 4+), so no "free shipping at 4+" Shopify Function and no "add X cans for free shipping" progress bar.
+- Optional low-priority soft upsell: a single "one box away from the musette" nudge on the 4-can box prompting an upgrade to the 8-can box. This is *not* the old threshold mechanic.
+
+## Subscriptions — DEFERRED (do not build for launch)
+
+Subscriptions are intentionally **out of scope for launch.** Ship the store on **one-time box sales only**, then introduce subscriptions later as a value-add. Do not add subscription UI, apps, or copy to the launch build.
+
+Rationale (Marc): the subscription mechanism is still being worked out, and launching it day 1 risks overloading the release. Hypothesis — no one subscribes before they've tried the product, so forcing one-time sales at inception and enabling subscriptions afterward reads as a *customer benefit*, especially if it carries a recurring-order discount.
+
+When it's eventually built (post-launch, design TBD; numbers below are **not final**):
+- **4-pack** — recurring discount (~10%?), free shipping, skip/pause/swap. Likely cheaper than the one-time 4-can box — surface that as the entry-to-membership nudge.
+- **8-pack bi-monthly** — recurring discount (~15%?), free shipping, rotating musette ~every 3rd order.
+- The discount % is **not finalized.**
+- App: likely Shopify Subscriptions (native); Recharge only if multi-tier complexity demands it.
+
+## Naming & brand rules
+- Consumer-facing coffee names are **"Fox Meyer"** (orange fox) and **"Petite Grenouille"** (green frog). **"Fox Blend" is INTERNAL ONLY — never on the site.**
+- **Orange is reserved strictly for CTAs.** Voice: restrained/premium — reference Aesop, Kinto, Berluti; never specialty-coffee cliché.
+- Bilingual FR/EN, **French markedly predominant** on Quebec-facing surfaces (Bill 96). Law 25 compliant. Use **"Fox Meyer ᴹᴰ"** for FR/Quebec-gov surfaces and **"Fox Meyer®"** for EN.
+
+## Migration — old model → box model (cleanup checklist)
+
+The Shop hub and PDP were built around per-can add-to-cart + bundle tiers + a free-shipping threshold. These must be replaced by the two-box model above:
+
+- [ ] Remove single-can DTC product / per-can add-to-cart from the Shop hub and PDP.
+- [ ] Build the 4-Can and 8-Can box products with a mix-and-match box builder.
+- [ ] Remove the cart-tier free-shipping threshold (the "free ship at 4+" Shopify automatic-discount Function).
+- [ ] Remove the "add N cans for free shipping" progress bar and any 1–3 can "grey zone" cart states.
+- [ ] Remove the bundle-tier pricing UI (no cart-level discounts).
+- [ ] Purge any "Fox Blend" wording from consumer-facing copy (replace with "Fox Meyer").
+
+### Open flags (track, not blockers)
+- **Box packaging cost is a placeholder** (~$1.25 4-can / ~$1.75 8-can) pending a real vendor quote/MOQ — confirm before committing packaging spend.
+- **Launch tripwire:** watch first-order conversion + add-to-cart-without-purchase over the first ~60 days / 150–200 orders. The 4-can floor (~$48–56) is a deliberate filter; soft conversion is the signal it's biting.
+- **Designed-but-unbuilt fallback:** a 2-can trial box (customer pays shipping) is held ready to introduce **only if** the conversion tripwire fires. Do not build it for launch.
 
 ## Custom homepage
 The homepage was refactored from a single-page `index.html` design (Three.js 3D spinning-can animation + GSAP scroll effects) into proper Shopify theme files:
@@ -29,7 +81,7 @@ The Shop hub, product page (PDP) and About page share one design system (mirrors
 
 | File | Role |
 |---|---|
-| `sections/fox-meyer-shop.liquid` | Shop hub — both cans, inline add-to-cart + Shop Pay, bundle tiers, why, reviews, FAQ |
+| `sections/fox-meyer-shop.liquid` | Shop hub. **Currently** built around per-can add-to-cart + bundle tiers (old model) — slated to migrate to the 4-Can / 8-Can box builder (see "Migration"). Also: why, reviews, FAQ |
 | `sections/fox-meyer-product.liquid` | Branded PDP |
 | `sections/fox-meyer-about.liquid` | About / "Who is Fox Meyer?" — the people (Massilia, Marc, Armando), the freshness mission, fun & passion, closing CTA. Image pickers fall back to dashed placeholders until photos are uploaded |
 | `assets/fox-meyer-store.css` | Shared stylesheet for Shop + PDP + About, scoped under `.fms` |
