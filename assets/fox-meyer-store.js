@@ -1,14 +1,16 @@
 /* Fox Meyer Store — front-end behaviour for the Shop page + PDP.
    Self-contained: AJAX cart (add / change / remove), slide-in cart drawer,
-   free-shipping progress, quantity steppers, sticky mobile buy bar, toasts.
+   the 4/8-can box builder, quantity steppers, sticky mobile buy bar, toasts.
+   Every DTC order is a box (4 or 8 cans), so shipping is always free — there
+   is no free-shipping threshold or progress bar.
    Config is read from window.FMS (set in the section template). */
 (function () {
   'use strict';
 
   var CFG = window.FMS || {};
-  var FREE_SHIP_QTY = CFG.freeShipQty || 4;        // cans needed for free shipping
   var MONEY_FORMAT = CFG.moneyFormat || '${{amount}}';
   var ROOT = (CFG.routesRoot || '/').replace(/\/$/, '');
+  var CHAR = { fox: CFG.lineFox || '', gren: CFG.lineGren || '' };  // builder character art for cart lines
 
   /* ---------- helpers ---------- */
   function money(cents) {
@@ -17,6 +19,16 @@
   }
   function el(sel, ctx) { return (ctx || document).querySelector(sel); }
   function els(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+  // The two coffees ship without a product photo, so show the fox / frog
+  // character in the cart drawer to match the box builder.
+  function lineImage(item) {
+    var h = (item.handle || '').toLowerCase();
+    var t = (item.product_title || '').toLowerCase();
+    if (CHAR.gren && (h.indexOf('grenouille') > -1 || t.indexOf('grenouille') > -1)) return CHAR.gren;
+    if (CHAR.fox && (h.indexOf('fox') > -1 || t.indexOf('fox') > -1)) return CHAR.fox;
+    return item.image ? item.image.replace(/(\.[a-z]+)(\?|$)/i, '_120x$1$2') : '';
+  }
 
   /* ---------- drawer markup (injected once) ---------- */
   var drawer, overlay, toastEl;
@@ -63,26 +75,14 @@
     var foot = el('.fms-drawer-foot', drawer);
 
     if (!cart.item_count) {
-      body.innerHTML = '<div class="fms-drawer-empty">Your cart is empty.<br>Fresh cans are one click away.</div>';
+      body.innerHTML = '<div class="fms-drawer-empty">Your cart is empty.<br>Build a box — shipping’s on us.</div>';
       foot.innerHTML = '';
       return;
     }
 
-    // free-shipping progress is based on total can quantity
-    var qty = cart.item_count;
-    var remaining = Math.max(0, FREE_SHIP_QTY - qty);
-    var pct = Math.min(100, Math.round((qty / FREE_SHIP_QTY) * 100));
-    var progress =
-      '<div class="fms-ship-progress">' +
-      (remaining > 0
-        ? '<p>Add <strong>' + remaining + ' more</strong> ' + (remaining === 1 ? 'can' : 'cans') + ' for <strong>free shipping</strong>.</p>'
-        : '<p><strong>You’ve unlocked free shipping.</strong> Nice.</p>') +
-      '<div class="fms-bar"><i style="width:' + pct + '%"></i></div></div>';
-
     var lines = cart.items.map(function (item, i) {
-      var img = item.image
-        ? '<img src="' + item.image.replace(/(\.[a-z]+)(\?|$)/i, '_120x$1$2') + '" alt="">'
-        : '';
+      var src = lineImage(item);
+      var img = src ? '<img src="' + src + '" alt="">' : '';
       return '<div class="fms-line" data-line="' + (i + 1) + '">' +
         '<div class="fms-line-img">' + img + '</div>' +
         '<div class="fms-line-info">' +
@@ -100,7 +100,7 @@
         '</div></div>';
     }).join('');
 
-    body.innerHTML = progress + lines;
+    body.innerHTML = '<div class="fms-ship-included">Free shipping included</div>' + lines;
 
     foot.innerHTML =
       '<div class="fms-subtotal"><span>Subtotal</span><strong>' + money(cart.total_price) + '</strong></div>' +
@@ -137,12 +137,12 @@
   function getCart() {
     return fetch(ROOT + '/cart.js', { headers: { 'Accept': 'application/json' } }).then(function (r) { return r.json(); });
   }
-  function addToCart(id, quantity, btn) {
+  function addItems(items, btn, toastMsg) {
     if (btn) btn.classList.add('is-loading');
     return fetch(ROOT + '/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ items: [{ id: id, quantity: quantity }] })
+      body: JSON.stringify({ items: items })
     })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
       .then(function (res) {
@@ -151,11 +151,14 @@
       })
       .then(function (cart) {
         renderCart(cart);
-        toast('Added to cart');
+        toast(toastMsg || 'Added to cart');
         openDrawer();
       })
       .catch(function () {})
       .finally(function () { if (btn) btn.classList.remove('is-loading'); });
+  }
+  function addToCart(id, quantity, btn) {
+    return addItems([{ id: id, quantity: quantity }], btn);
   }
   function changeLine(line, quantity) {
     return fetch(ROOT + '/cart/change.js', {
@@ -165,6 +168,101 @@
     })
       .then(function (r) { return r.json(); })
       .then(renderCart);
+  }
+
+  /* ---------- box builder (4 / 8-can mix-and-match) ---------- */
+  function bindBoxBuilder() {
+    var root = el('[data-box-builder]');
+    if (!root) return;
+
+    var cans = {
+      fox:  { id: root.getAttribute('data-fox-id'),  price: parseInt(root.getAttribute('data-fox-price'), 10) || 0 },
+      gren: { id: root.getAttribute('data-gren-id'), price: parseInt(root.getAttribute('data-gren-price'), 10) || 0 }
+    };
+    if (!cans.fox.id || !cans.gren.id) return;
+
+    var size = 4;
+    var counts = { fox: 2, gren: 2 };
+
+    var sizeBtns = els('[data-box-size]', root);
+    var inputs   = { fox: el('[data-can-input="fox"]', root), gren: el('[data-can-input="gren"]', root) };
+    var totalEl  = el('[data-box-total]', root);
+    var countEl  = el('[data-box-count]', root);
+    var targetEl = el('[data-box-target]', root);
+    var dotsEl   = el('[data-box-dots]', root);
+    var addBtn   = el('[data-box-add]', root);
+    var addLabel = el('[data-box-add-label]', root);
+    var musette  = el('[data-box-musette]', root);
+
+    function sum()   { return counts.fox + counts.gren; }
+    function total() { return counts.fox * cans.fox.price + counts.gren * cans.gren.price; }
+
+    function render() {
+      if (inputs.fox)  inputs.fox.value  = counts.fox;
+      if (inputs.gren) inputs.gren.value = counts.gren;
+
+      var picked = sum();
+      if (countEl)  countEl.textContent  = picked;
+      if (targetEl) targetEl.textContent = size;
+      if (totalEl)  totalEl.textContent  = money(total());
+
+      if (dotsEl) {
+        var html = '';
+        for (var i = 0; i < size; i++) html += '<i' + (i < picked ? ' class="is-on"' : '') + '></i>';
+        dotsEl.innerHTML = html;
+      }
+
+      var remaining = size - picked;
+      addBtn.disabled = remaining !== 0;
+      if (addLabel) {
+        addLabel.textContent = remaining > 0
+          ? 'Add ' + remaining + ' more ' + (remaining === 1 ? 'can' : 'cans')
+          : 'Add box — ' + money(total());
+      }
+
+      if (musette) musette.hidden = size !== 8;
+    }
+
+    function setSize(n) {
+      size = n;
+      counts.fox = n / 2;          // default to an even split (the suggested sampler)
+      counts.gren = n - counts.fox;
+      sizeBtns.forEach(function (b) {
+        var on = parseInt(b.getAttribute('data-box-size'), 10) === n;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      render();
+    }
+
+    sizeBtns.forEach(function (b) {
+      b.addEventListener('click', function () { setSize(parseInt(b.getAttribute('data-box-size'), 10)); });
+    });
+
+    els('[data-can-step]', root).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var wrap = b.closest('[data-can-stepper]');
+        if (!wrap) return;
+        var can = wrap.getAttribute('data-can-stepper');
+        var step = parseInt(b.getAttribute('data-can-step'), 10);
+        if (step > 0 && sum() >= size) return;       // box is full
+        var next = counts[can] + step;
+        if (next < 0) return;
+        counts[can] = next;
+        render();
+      });
+    });
+
+    addBtn.addEventListener('click', function () {
+      if (sum() !== size) return;
+      var items = [];
+      if (counts.fox  > 0) items.push({ id: cans.fox.id,  quantity: counts.fox });
+      if (counts.gren > 0) items.push({ id: cans.gren.id, quantity: counts.gren });
+      if (!items.length) return;
+      addItems(items, addBtn, size + '-can box added');
+    });
+
+    setSize(4);
   }
 
   /* ---------- quantity steppers (product forms) ---------- */
@@ -244,6 +342,7 @@
   /* ---------- init ---------- */
   function init() {
     buildDrawer();
+    bindBoxBuilder();
     bindSteppers();
     bindForms();
     bindCartTriggers();

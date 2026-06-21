@@ -11,8 +11,9 @@
 <script>
   window.FMS = {
     routesRoot: {{ routes.root_url | json }},
-    freeShipQty: {{ section.settings.free_ship_qty | default: 4 | json }},
-    moneyFormat: {{ shop.money_format | json }}
+    moneyFormat: {{ shop.money_format | json }},
+    lineFox: {{ 'fox-meyer-char-fox.png' | asset_img_url: '120x120' | json }},
+    lineGren: {{ 'fox-meyer-char-grenouille.png' | asset_img_url: '120x120' | json }}
   };
 </script>
 <script src="{{ 'fox-meyer-store.js' | asset_url }}" defer></script>
@@ -61,7 +62,7 @@
 
         <div class="fms-pdp-pricerow">
           <span class="fms-price">{{ v.price | money }}</span>
-          <span class="fms-qty-label">{{ section.settings.unit_label | default: 'CAD · 150 g whole bean' }}</span>
+          <span class="fms-qty-label">{{ section.settings.unit_label | default: 'CAD · per 150 g can' }}</span>
         </div>
 
         <div class="fms-pdp-desc">
@@ -77,24 +78,16 @@
 
         <hr class="fms-divider">
 
-        <!-- Buy box -->
-        {%- form 'product', product, data-fms-form: '', class: 'fms-buy' -%}
-          <input type="hidden" name="id" value="{{ v.id }}">
-          <div class="fms-qtyrow" data-sticky-anchor>
-            <div class="fms-qty" data-stepper>
-              <button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button>
-              <input type="text" name="quantity" value="1" inputmode="numeric" pattern="[0-9]*" aria-label="Quantity">
-              <button type="button" data-step="1" aria-label="Increase quantity">+</button>
-            </div>
-            <span class="fms-qty-label">cans · free shipping on {{ section.settings.free_ship_qty | default: 4 }}+</span>
-          </div>
-          {%- if v.available -%}
-            <button type="submit" class="fms-btn fms-btn-orange" data-add>Add to cart — {{ v.price | money }}</button>
-            {{ form | payment_button }}
-          {%- else -%}
-            <button type="button" class="fms-btn fms-btn-orange" disabled>Sold out</button>
+        <!-- Buy: cans ship only inside a 4 or 8-can box, built on the Shop page -->
+        <div class="fms-buy" data-sticky-anchor>
+          <a class="fms-btn fms-btn-orange" href="{{ routes.root_url }}pages/shop#builder">{{ section.settings.buy_cta | default: 'Add to a box' }}</a>
+          {%- if section.settings.buy_note != blank -%}
+            <p class="fms-ship-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              {{ section.settings.buy_note }}
+            </p>
           {%- endif -%}
-        {%- endform -%}
+        </div>
 
         <hr class="fms-divider">
 
@@ -138,12 +131,8 @@
 
   <!-- Sticky mobile buy bar -->
   <div class="fms-stickybar" aria-hidden="true">
-    <span class="fms-price">{{ v.price | money }}</span>
-    {%- if v.available -%}
-      <button type="button" class="fms-btn fms-btn-orange" data-sticky-add>Add to cart</button>
-    {%- else -%}
-      <button type="button" class="fms-btn fms-btn-orange" disabled>Sold out</button>
-    {%- endif -%}
+    <span class="fms-price">{{ v.price | money }}<small>/ can</small></span>
+    <a class="fms-btn fms-btn-orange" href="{{ routes.root_url }}pages/shop#builder">{{ section.settings.buy_cta | default: 'Add to a box' }}</a>
   </div>
 </div>
 
@@ -153,9 +142,10 @@
   "settings": [
     { "type": "header", "content": "Buy box" },
     { "type": "text", "id": "sub_label", "label": "Eyebrow above title", "default": "Specialty espresso · Nitrogen-sealed" },
-    { "type": "text", "id": "unit_label", "label": "Unit label beside price", "default": "CAD · 150 g whole bean" },
+    { "type": "text", "id": "unit_label", "label": "Unit label beside price", "default": "CAD · per 150 g can" },
     { "type": "text", "id": "spec_chips", "label": "Spec chips (separate with | )", "default": "150 g · Whole bean | Nitrogen-flushed | SCA 86+ | Recyclable aluminium" },
-    { "type": "number", "id": "free_ship_qty", "label": "Free-shipping threshold (cans)", "default": 4 },
+    { "type": "text", "id": "buy_cta", "label": "Buy button label", "info": "Cans sell only inside a 4 or 8-can box. This button sends shoppers to the box builder on the Shop page.", "default": "Add to a box" },
+    { "type": "text", "id": "buy_note", "label": "Note under buy button", "default": "Sold in mix-and-match 4 & 8-can boxes — free shipping, always." },
     { "type": "textarea", "id": "fallback_desc", "label": "Description fallback (if product has none)", "default": "Competition-grade beans, small-batch roasted in Dorval and nitrogen-sealed in aluminium for roast-day freshness in every cup." },
 
     { "type": "header", "content": "Ratings" },
