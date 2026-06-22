@@ -402,7 +402,7 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 .fms-line-img img { max-width: 86%; max-height: 86%; width: auto; height: auto; object-fit: contain; }
 .fms-line-info { flex: 1; }
 .fms-line-title { font-family: var(--display); font-weight: 700; text-transform: uppercase; font-size: 17px; letter-spacing: .02em; }
-.fms-line-meta { font-size: 13px; color: var(--cream-faint); margin-top: 2px; }
+.fms-line-meta { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .02em; color: var(--cream-faint); margin-top: 2px; }
 .fms-line-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
 .fms-line-price { font-family: var(--display); font-weight: 700; font-size: 17px; }
 .fms-line-remove { background: none; border: 0; color: var(--cream-faint); cursor: pointer; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; text-decoration: underline; }
