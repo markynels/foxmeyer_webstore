@@ -31,26 +31,10 @@
 
   <div class="fms-wrap">
 
-    <!-- Hero -->
-    <section class="fms-container fms-section fms-hero">
-      <p class="fms-eyebrow">{{ section.settings.hero_eyebrow }}</p>
-      <h1 class="fms-h1">{{ section.settings.hero_heading }}</h1>
-      <p class="fms-lead fms-center">{{ section.settings.hero_sub }}</p>
-      <div class="fms-trust">
-        {%- assign trust_items = section.settings.trust_strip | split: '|' -%}
-        {%- for t in trust_items -%}
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            {{ t | strip }}
-          </span>
-        {%- endfor -%}
-      </div>
-    </section>
-
     <!-- Box builder -->
-    <section class="fms-container fms-section" id="builder" style="padding-top:0">
+    <section class="fms-container fms-section" id="builder">
       <p class="fms-eyebrow fms-center">{{ section.settings.builder_eyebrow }}</p>
-      <h2 class="fms-h2 fms-center">{{ section.settings.builder_heading }}</h2>
+      <h1 class="fms-h2 fms-center">{{ section.settings.builder_heading }}</h1>
       {%- if section.settings.builder_sub != blank -%}
         <p class="fms-lead fms-center" style="margin:16px auto 0">{{ section.settings.builder_sub }}</p>
       {%- endif -%}
@@ -84,8 +68,13 @@
               <div class="fms-box-can-info">
                 <h3 class="fms-box-can-name">{{ p1.title }}</h3>
                 {%- if section.settings.p1_notes != blank -%}<div class="fms-card-notes">{{ section.settings.p1_notes }}</div>{%- endif -%}
-                {%- if section.settings.p1_tasting != blank -%}<p class="fms-box-can-tasting">{{ section.settings.p1_tasting }}</p>{%- endif -%}
                 <div class="fms-box-can-price">{{ fv.price | money }} <small>/ can</small></div>
+                {%- if section.settings.p1_chips != blank -%}
+                  <div class="fms-box-can-chips">
+                    {%- assign p1chips = section.settings.p1_chips | split: '·' -%}
+                    {%- for c in p1chips -%}<span>{{ c | strip }}</span>{%- endfor -%}
+                  </div>
+                {%- endif -%}
               </div>
               <div class="fms-qty" data-can-stepper="fox">
                 <button type="button" data-can-step="-1" aria-label="Remove one {{ p1.title }}">&minus;</button>
@@ -102,8 +91,13 @@
               <div class="fms-box-can-info">
                 <h3 class="fms-box-can-name">{{ p2.title }}</h3>
                 {%- if section.settings.p2_notes != blank -%}<div class="fms-card-notes">{{ section.settings.p2_notes }}</div>{%- endif -%}
-                {%- if section.settings.p2_tasting != blank -%}<p class="fms-box-can-tasting">{{ section.settings.p2_tasting }}</p>{%- endif -%}
                 <div class="fms-box-can-price">{{ gv.price | money }} <small>/ can</small></div>
+                {%- if section.settings.p2_chips != blank -%}
+                  <div class="fms-box-can-chips">
+                    {%- assign p2chips = section.settings.p2_chips | split: '·' -%}
+                    {%- for c in p2chips -%}<span>{{ c | strip }}</span>{%- endfor -%}
+                  </div>
+                {%- endif -%}
               </div>
               <div class="fms-qty" data-can-stepper="gren">
                 <button type="button" data-can-step="-1" aria-label="Remove one {{ p2.title }}">&minus;</button>
@@ -217,12 +211,6 @@
 {
   "name": "Fox Meyer Shop",
   "settings": [
-    { "type": "header", "content": "Hero" },
-    { "type": "text", "id": "hero_eyebrow", "label": "Eyebrow", "default": "Shop" },
-    { "type": "text", "id": "hero_heading", "label": "Heading", "default": "Build your box." },
-    { "type": "textarea", "id": "hero_sub", "label": "Subheading", "default": "Nitrogen-sealed specialty coffee, roasted to order in Dorval. Choose four or eight cans, mix the two blends however you like — shipping is always free." },
-    { "type": "text", "id": "trust_strip", "label": "Trust strip (separate with | )", "default": "Free shipping on every box | Mix & match both blends | Roasted to order · Ships in 1–2 days | Secure checkout" },
-
     { "type": "header", "content": "Box builder" },
     { "type": "text", "id": "builder_eyebrow", "label": "Eyebrow", "default": "Build your box" },
     { "type": "text", "id": "builder_heading", "label": "Heading", "default": "Four or eight. Your blend." },
@@ -235,12 +223,12 @@
     { "type": "header", "content": "Coffee 1 (left)" },
     { "type": "product", "id": "product_1", "label": "Product (defaults to “fox-meyer”)" },
     { "type": "text", "id": "p1_notes", "label": "Origin eyebrow", "default": "Brazil · Colombia · Medium-dark" },
-    { "type": "textarea", "id": "p1_tasting", "label": "Tasting notes", "default": "Velvety caramel, dark cocoa and toasted almond; a round body with a clean, lingering finish. Pulls a beautiful espresso and holds its own through milk." },
+    { "type": "text", "id": "p1_chips", "label": "Flavour notes (separate with · )", "info": "Short keywords shown as chips. Full prose lives on the product page.", "default": "Velvety caramel · Dark cocoa · Toasted almond" },
 
     { "type": "header", "content": "Coffee 2 (right)" },
     { "type": "product", "id": "product_2", "label": "Product (defaults to “petite-grenouille”)" },
     { "type": "text", "id": "p2_notes", "label": "Origin eyebrow", "default": "Brazil · India · Guatemala · Medium-dark" },
-    { "type": "textarea", "id": "p2_tasting", "label": "Tasting notes", "default": "Rich molasses, dark cocoa, toasted almond and walnut: richer and more full-bodied than the flagship, with a smooth, syrupy finish." },
+    { "type": "text", "id": "p2_chips", "label": "Flavour notes (separate with · )", "info": "Short keywords shown as chips. Full prose lives on the product page.", "default": "Rich molasses · Dark cocoa · Walnut finish" },
 
     { "type": "header", "content": "Why Fox Meyer" },
     { "type": "text", "id": "why_eyebrow", "label": "Eyebrow", "default": "Why Fox Meyer" },

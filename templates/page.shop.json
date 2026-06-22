@@ -13,10 +13,6 @@
     "shop": {
       "type": "fox-meyer-shop",
       "settings": {
-        "hero_eyebrow": "Shop",
-        "hero_heading": "Build your box.",
-        "hero_sub": "",
-        "trust_strip": "Free shipping on every box | Mix & match both blends | Ships in 1–2 business days",
         "builder_eyebrow": "Build your box",
         "builder_heading": "Four or eight. Your blend.",
         "builder_sub": "Every box ships free. Mix & match our blends. Orders ship in 1-2 business days.",
@@ -26,10 +22,10 @@
         "box8_perk": "Your 8-can box includes a limited-edition Fox Meyer musette — on us, while quantities last.",
         "product_1": "",
         "p1_notes": "Brazil · Colombia · Medium-dark roast",
-        "p1_tasting": "Velvety caramel, dark cocoa and toasted almond; a round body with a clean, lingering finish. Pulls a beautiful espresso and holds its own through milk.",
+        "p1_chips": "Velvety caramel · Dark cocoa · Toasted almond",
         "product_2": "",
         "p2_notes": "Brazil · India · Guatemala · Medium-dark roast",
-        "p2_tasting": "Rich molasses, dark cocoa, toasted almond and walnut: richer and more full-bodied than the flagship, with a smooth, syrupy finish.",
+        "p2_chips": "Rich molasses · Dark cocoa · Walnut finish",
         "why_eyebrow": "Why Fox Meyer",
         "why_heading": "Built for the cup, not the shelf.",
         "why_1_icon": "nitrogen",
