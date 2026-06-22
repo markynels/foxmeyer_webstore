@@ -235,26 +235,26 @@
 
 </div>
 
-{%- comment -%} TEMP iOS bottom-bar diagnostic — only runs with ?fmdebug in the URL. Remove after debugging. {%- endcomment -%}
+{%- comment -%} TEMP iOS bottom-bar diagnostic — ALWAYS ON (store is password-gated, no traffic). Remove after debugging. {%- endcomment -%}
 <script>
 (function () {
-  if (!/fmdebug/.test(location.search)) return;
+  var T0 = Date.now();
 
   var panel = document.createElement('div');
   panel.setAttribute('style', [
     'position:fixed','top:0','left:0','right:0','z-index:99999',
-    'background:rgba(0,0,0,.92)','color:#0f0','font:11px/1.35 monospace',
-    'padding:8px 10px','white-space:pre-wrap','pointer-events:none',
-    'max-height:62vh','overflow:hidden','border-bottom:1px solid #0f0'
+    'background:rgba(0,0,0,.92)','color:#0f0','font:10px/1.3 monospace',
+    'padding:7px 9px','white-space:pre-wrap','pointer-events:none',
+    'max-height:70vh','overflow:hidden','border-bottom:1px solid #0f0'
   ].join(';'));
   document.body.appendChild(panel);
 
-  // marker drawn at the bottom sample line so the screenshot shows where we probed
+  // magenta marker at the bottom probe line so the screenshot shows where we sampled
   var mark = document.createElement('div');
   mark.setAttribute('style', 'position:fixed;left:0;right:0;height:2px;background:#f0f;z-index:99998;pointer-events:none;');
   document.body.appendChild(mark);
 
-  function rgb(el) { return el ? getComputedStyle(el).backgroundColor : '—'; }
+  function rgb(el) { return el ? getComputedStyle(el).backgroundColor : '-'; }
   function name(el) {
     if (!el) return 'null';
     var s = el.tagName.toLowerCase();
@@ -264,66 +264,73 @@
   }
   function rectOf(sel) {
     var el = document.querySelector(sel);
-    if (!el) return sel + ': (absent)';
+    if (!el) return sel + ': absent';
     var r = el.getBoundingClientRect();
-    return sel + ': top=' + r.top.toFixed(0) + ' bottom=' + r.bottom.toFixed(0) +
-           ' h=' + r.height.toFixed(0) + ' bg=' + rgb(el);
+    return sel + ': t=' + r.top.toFixed(0) + ' b=' + r.bottom.toFixed(0) + ' h=' + r.height.toFixed(0) + ' bg=' + rgb(el);
+  }
+  // first non-transparent bg walking up from a point
+  function opaqueAt(x, y) {
+    var e = document.elementFromPoint(x, y), hops = 0;
+    while (e && hops < 10) {
+      var bg = rgb(e);
+      if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') return name(e) + ' = ' + bg;
+      e = e.parentElement; hops++;
+    }
+    return 'none';
+  }
+
+  // rolling history of distinct bottom readings (captures transient first-load states)
+  var hist = [], lastSig = '';
+  function logHist(t, ih, vh, opq) {
+    var sig = opq + '|' + Math.round(ih) + '|' + Math.round(vh);
+    if (sig === lastSig) return;
+    lastSig = sig;
+    hist.unshift('+' + ((Date.now() - T0) / 1000).toFixed(1) + 's ih=' + Math.round(ih) + ' vh=' + Math.round(vh) + ' OPAQUE@bottom: ' + opq);
+    if (hist.length > 14) hist.pop();
   }
 
   function sample() {
     var vv = window.visualViewport || {};
-    var W = window.innerWidth;
-    var ih = window.innerHeight;
-    var vh = vv.height || ih;
+    var W = window.innerWidth, ih = window.innerHeight, vh = vv.height || ih;
+    var opqBottom = opaqueAt(W / 2, ih - 3);
+    logHist(T0, ih, vh, opqBottom);
+
     var lines = [];
-    lines.push('=== FM iOS BOTTOM-BAR DEBUG ===');
-    lines.push('innerH=' + ih + ' visualVP.h=' + (vv.height ? vv.height.toFixed(0) : '?') +
-               ' vv.offsetTop=' + (vv.offsetTop != null ? vv.offsetTop.toFixed(0) : '?') +
-               ' docEl.clientH=' + document.documentElement.clientHeight);
-    lines.push('scrollY=' + window.scrollY.toFixed(0) + ' scrollH=' + document.documentElement.scrollHeight +
-               ' dpr=' + (window.devicePixelRatio || 1));
-
-    // probe a column of points from the very bottom upward
-    var probeY = [ih - 1, ih - 6, ih - 16, ih - 30, ih - 50, vh - 1, vh - 16];
-    lines.push('--- elementFromPoint (x=' + Math.round(W / 2) + ') ---');
-    probeY.forEach(function (y) {
-      var el = document.elementFromPoint(W / 2, y);
-      lines.push('y=' + y.toFixed(0) + ' -> ' + name(el) + ' | bg=' + rgb(el));
+    lines.push('=== FM iOS BOTTOM-BAR DEBUG (always-on) ===');
+    lines.push('t=+' + ((Date.now() - T0) / 1000).toFixed(1) + 's  innerH=' + ih +
+               '  visualVP.h=' + (vv.height ? vv.height.toFixed(0) : '?') +
+               '  vv.offTop=' + (vv.offsetTop != null ? vv.offsetTop.toFixed(0) : '?') +
+               '  docEl.clientH=' + document.documentElement.clientHeight);
+    lines.push('scrollY=' + window.scrollY.toFixed(0) + '  scrollH=' + document.documentElement.scrollHeight +
+               '  dpr=' + (window.devicePixelRatio || 1) +
+               '  fontsReady=' + (document.fonts ? document.fonts.status : '?'));
+    lines.push('OPAQUE @bottom(y=' + (ih - 3) + '): ' + opqBottom);
+    lines.push('--- probes x=' + Math.round(W / 2) + ' ---');
+    [ih - 1, ih - 8, ih - 20, ih - 40, ih - 70, vh - 2].forEach(function (y) {
+      lines.push(' y=' + Math.round(y) + ' -> ' + name(document.elementFromPoint(W / 2, y)) + ' bg=' + rgb(document.elementFromPoint(W / 2, y)));
     });
-
-    // ancestor chain + opaque bg of the bottom-most hit
-    var bottomEl = document.elementFromPoint(W / 2, ih - 3);
-    lines.push('--- bg chain @ y=' + (ih - 3).toFixed(0) + ' ---');
-    var hops = 0, e = bottomEl;
-    while (e && hops < 8) {
-      var bg = rgb(e);
-      if (bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-        lines.push('OPAQUE: ' + name(e) + ' = ' + bg);
-        break;
-      }
-      lines.push('  ' + name(e) + ' (transparent)');
-      e = e.parentElement; hops++;
-    }
-
-    lines.push('--- candidate rects ---');
-    ['.fm-page', '#fm-bg-green', '#fm-stage', '#fm-loader', '.fm-main', '.fm-footer'].forEach(function (s) {
-      lines.push(rectOf(s));
-    });
-    lines.push('bgGreen.opacity=' + (document.getElementById('fm-bg-green') || {}).style?.opacity);
+    lines.push('--- rects ---');
+    ['.fm-page', '#fm-bg-green', '#fm-stage', '#fm-loader', '.fm-main', '.fm-footer'].forEach(function (s) { lines.push(rectOf(s)); });
+    var g = document.getElementById('fm-bg-green');
+    lines.push('bgGreen.opacity=' + (g ? (g.style.opacity || '(unset)') : 'absent') +
+               '  loader=' + (document.getElementById('fm-loader') ? 'present' : 'removed'));
+    lines.push('--- HISTORY (newest first) ---');
+    lines = lines.concat(hist);
 
     panel.textContent = lines.join('\n');
     mark.style.top = (ih - 3) + 'px';
   }
 
   sample();
-  ['scroll', 'resize', 'touchmove', 'touchend'].forEach(function (ev) {
+  ['scroll', 'resize', 'touchmove', 'touchend', 'load'].forEach(function (ev) {
     window.addEventListener(ev, sample, { passive: true });
   });
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', sample);
     window.visualViewport.addEventListener('scroll', sample);
   }
-  setInterval(sample, 400);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sample);
+  setInterval(sample, 250);
 })();
 </script>
 
