@@ -235,6 +235,98 @@
 
 </div>
 
+{%- comment -%} TEMP iOS bottom-bar diagnostic — only runs with ?fmdebug in the URL. Remove after debugging. {%- endcomment -%}
+<script>
+(function () {
+  if (!/fmdebug/.test(location.search)) return;
+
+  var panel = document.createElement('div');
+  panel.setAttribute('style', [
+    'position:fixed','top:0','left:0','right:0','z-index:99999',
+    'background:rgba(0,0,0,.92)','color:#0f0','font:11px/1.35 monospace',
+    'padding:8px 10px','white-space:pre-wrap','pointer-events:none',
+    'max-height:62vh','overflow:hidden','border-bottom:1px solid #0f0'
+  ].join(';'));
+  document.body.appendChild(panel);
+
+  // marker drawn at the bottom sample line so the screenshot shows where we probed
+  var mark = document.createElement('div');
+  mark.setAttribute('style', 'position:fixed;left:0;right:0;height:2px;background:#f0f;z-index:99998;pointer-events:none;');
+  document.body.appendChild(mark);
+
+  function rgb(el) { return el ? getComputedStyle(el).backgroundColor : '—'; }
+  function name(el) {
+    if (!el) return 'null';
+    var s = el.tagName.toLowerCase();
+    if (el.id) s += '#' + el.id;
+    if (el.className && typeof el.className === 'string') s += '.' + el.className.trim().replace(/\s+/g, '.');
+    return s;
+  }
+  function rectOf(sel) {
+    var el = document.querySelector(sel);
+    if (!el) return sel + ': (absent)';
+    var r = el.getBoundingClientRect();
+    return sel + ': top=' + r.top.toFixed(0) + ' bottom=' + r.bottom.toFixed(0) +
+           ' h=' + r.height.toFixed(0) + ' bg=' + rgb(el);
+  }
+
+  function sample() {
+    var vv = window.visualViewport || {};
+    var W = window.innerWidth;
+    var ih = window.innerHeight;
+    var vh = vv.height || ih;
+    var lines = [];
+    lines.push('=== FM iOS BOTTOM-BAR DEBUG ===');
+    lines.push('innerH=' + ih + ' visualVP.h=' + (vv.height ? vv.height.toFixed(0) : '?') +
+               ' vv.offsetTop=' + (vv.offsetTop != null ? vv.offsetTop.toFixed(0) : '?') +
+               ' docEl.clientH=' + document.documentElement.clientHeight);
+    lines.push('scrollY=' + window.scrollY.toFixed(0) + ' scrollH=' + document.documentElement.scrollHeight +
+               ' dpr=' + (window.devicePixelRatio || 1));
+
+    // probe a column of points from the very bottom upward
+    var probeY = [ih - 1, ih - 6, ih - 16, ih - 30, ih - 50, vh - 1, vh - 16];
+    lines.push('--- elementFromPoint (x=' + Math.round(W / 2) + ') ---');
+    probeY.forEach(function (y) {
+      var el = document.elementFromPoint(W / 2, y);
+      lines.push('y=' + y.toFixed(0) + ' -> ' + name(el) + ' | bg=' + rgb(el));
+    });
+
+    // ancestor chain + opaque bg of the bottom-most hit
+    var bottomEl = document.elementFromPoint(W / 2, ih - 3);
+    lines.push('--- bg chain @ y=' + (ih - 3).toFixed(0) + ' ---');
+    var hops = 0, e = bottomEl;
+    while (e && hops < 8) {
+      var bg = rgb(e);
+      if (bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+        lines.push('OPAQUE: ' + name(e) + ' = ' + bg);
+        break;
+      }
+      lines.push('  ' + name(e) + ' (transparent)');
+      e = e.parentElement; hops++;
+    }
+
+    lines.push('--- candidate rects ---');
+    ['.fm-page', '#fm-bg-green', '#fm-stage', '#fm-loader', '.fm-main', '.fm-footer'].forEach(function (s) {
+      lines.push(rectOf(s));
+    });
+    lines.push('bgGreen.opacity=' + (document.getElementById('fm-bg-green') || {}).style?.opacity);
+
+    panel.textContent = lines.join('\n');
+    mark.style.top = (ih - 3) + 'px';
+  }
+
+  sample();
+  ['scroll', 'resize', 'touchmove', 'touchend'].forEach(function (ev) {
+    window.addEventListener(ev, sample, { passive: true });
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', sample);
+    window.visualViewport.addEventListener('scroll', sample);
+  }
+  setInterval(sample, 400);
+})();
+</script>
+
 {% schema %}
 {
   "name": "Fox Meyer Homepage",
