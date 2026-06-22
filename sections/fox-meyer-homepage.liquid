@@ -18,7 +18,7 @@
 
   <!-- Loader -->
   <div id="fm-loader" class="fm-loader" aria-hidden="true">
-    <img src="{{ 'fox-meyer-logo.png' | asset_url }}" alt="" width="260" height="auto">
+    <img src="{{ 'fox-meyer-logo.svg' | asset_url }}" alt="" width="260" height="75">
   </div>
 
   <!-- Background layers -->
@@ -28,7 +28,7 @@
   <!-- Header -->
   <header class="fm-header">
     <a class="fm-wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
-      <img src="{{ 'fox-meyer-logo.png' | asset_url }}" alt="{{ shop.name }}" width="120" height="30">
+      <img src="{{ 'fox-meyer-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="120" height="35">
     </a>
     <div class="fm-header-actions">
       {%- if section.settings.lang_link != blank -%}
@@ -46,7 +46,7 @@
 
     <!-- Hero -->
     <section id="fm-hero" class="fm-section fm-hero">
-      <img class="fm-logo-hero" src="{{ 'fox-meyer-logo.png' | asset_url }}" alt="{{ shop.name }}" width="560" height="auto">
+      <img class="fm-logo-hero" src="{{ 'fox-meyer-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="560" height="161">
       <h1 class="fm-h1">{{ section.settings.hero_heading }}</h1>
       <p class="fm-hero-sub">{{ section.settings.hero_subheading }}</p>
       <div class="fm-hero-spacer" aria-hidden="true"></div>
@@ -214,7 +214,7 @@
     <div class="fm-footer-row">
       <div>
         <a class="fm-wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
-          <img src="{{ 'fox-meyer-logo.png' | asset_url }}" alt="{{ shop.name }}" width="100" height="26">
+          <img src="{{ 'fox-meyer-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="100" height="29">
         </a>
         <p class="fm-fine" style="margin-top:14px">{{ section.settings.footer_legal | newline_to_br }}</p>
       </div>
