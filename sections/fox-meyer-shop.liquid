@@ -189,13 +189,13 @@
       <p class="fms-eyebrow fms-center">{{ section.settings.faq_eyebrow }}</p>
       <h2 class="fms-h2 fms-center" style="margin-bottom:40px">{{ section.settings.faq_heading }}</h2>
       <div class="fms-faq">
-        {%- for i in (1..5) -%}
+        {%- for i in (1..6) -%}
           {%- assign q = 'faq_' | append: i | append: '_q' -%}
           {%- assign a = 'faq_' | append: i | append: '_a' -%}
           {%- if section.settings[q] != blank -%}
             <details {% if i == 1 %}open{% endif %}>
               <summary>{{ section.settings[q] }}</summary>
-              <div class="fms-faq-a">{{ section.settings[a] }}</div>
+              <div class="fms-faq-a">{{ section.settings[a] | newline_to_br }}</div>
             </details>
           {%- endif -%}
         {%- endfor -%}
@@ -270,13 +270,15 @@
     { "type": "text", "id": "faq_1_q", "label": "Q1", "default": "How does the box work?" },
     { "type": "textarea", "id": "faq_1_a", "label": "A1", "default": "Pick a four- or eight-can box, then split it between Fox Meyer and Petite Grenouille however you like — all Fox, all Grenouille, or any mix. Every box ships free. New here? A four-can box, two of each, is the easiest way to taste both." },
     { "type": "text", "id": "faq_2_q", "label": "Q2", "default": "Whole bean or ground?" },
-    { "type": "textarea", "id": "faq_2_a", "label": "A2", "default": "Every can ships as whole bean to protect freshness — 150 g, about 7–8 espressos. Grinding fresh is the single biggest upgrade to your cup." },
-    { "type": "text", "id": "faq_3_q", "label": "Q3", "default": "When will it arrive?" },
-    { "type": "textarea", "id": "faq_3_a", "label": "A3", "default": "Orders ship from Dorval, Québec within 1–2 business days. Most of Canada arrives in 2–5 business days. Shipping is always free." },
-    { "type": "text", "id": "faq_4_q", "label": "Q4", "default": "What if I don’t love it?" },
-    { "type": "textarea", "id": "faq_4_a", "label": "A4", "default": "Tell us within 100 days and we’ll make it right with a replacement or refund. No returning half-finished cans required." },
-    { "type": "text", "id": "faq_5_q", "label": "Q5", "default": "Can I pay with Shop Pay / Apple Pay?" },
-    { "type": "textarea", "id": "faq_5_a", "label": "A5", "default": "Yes. At checkout you can pay in seconds with Shop Pay, Apple Pay or Google Pay — no account or address typing needed." },
+    { "type": "textarea", "id": "faq_2_a", "label": "A2", "default": "Every can ships as whole bean to protect freshness — 150 g per can. Grinding fresh is the single biggest upgrade to your cup." },
+    { "type": "text", "id": "faq_3_q", "label": "Q3", "default": "How many espressos in a box?" },
+    { "type": "textarea", "id": "faq_3_a", "label": "A3", "default": "Every can holds 150 g of whole bean — the question is how far that goes, and that depends on how you pull your shots. A single takes about 9 g; a double, about 18 g.\n\nRoughly:\nOne can (150 g) — ~16 singles, or ~8 doubles\nFour-can box (600 g) — ~66 singles, or ~33 doubles\nEight-can box (1.2 kg) — ~133 singles, or ~66 doubles\n\nPut another way: a four-can box is about a month of a daily double; an eight-can box, about two." },
+    { "type": "text", "id": "faq_4_q", "label": "Q4", "default": "When will it arrive?" },
+    { "type": "textarea", "id": "faq_4_a", "label": "A4", "default": "Orders ship from Dorval, Québec within 1–2 business days. Most of Canada arrives in 2–5 business days. Shipping is always free." },
+    { "type": "text", "id": "faq_5_q", "label": "Q5", "default": "What if I don’t love it?" },
+    { "type": "textarea", "id": "faq_5_a", "label": "A5", "default": "Tell us within 100 days and we’ll make it right with a replacement or refund. No returning half-finished cans required." },
+    { "type": "text", "id": "faq_6_q", "label": "Q6", "default": "Can I pay with Shop Pay / Apple Pay?" },
+    { "type": "textarea", "id": "faq_6_a", "label": "A6", "default": "Yes. At checkout you can pay in seconds with Shop Pay, Apple Pay or Google Pay — no account or address typing needed." },
 
     { "type": "header", "content": "Footer" },
     { "type": "textarea", "id": "footer_legal", "label": "Legal text", "default": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans (Brazil & Colombia). Recycle where facilities exist." },
