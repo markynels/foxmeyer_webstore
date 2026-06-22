@@ -40,9 +40,16 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 
 .fm-page ::selection { background: var(--orange); color: var(--plum-deepest); }
 
-/* green background layer — crossfades in on the Petite Grenouille section */
+/* green background layer — crossfades in on the Petite Grenouille section.
+   Anchored top + sized to the large viewport (100lvh, 100vh fallback) rather
+   than inset:0 — on iOS WebKit a fixed `bottom:0` is pinned to the *dynamic*
+   visual-viewport bottom (it tracks the URL bar), so with the bar expanded on
+   first load the layer fell short and the plum page background showed through
+   as a bar along the bottom edge. */
 .fm-bg-green {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0;
+  position: fixed; top: 0; left: 0; width: 100%;
+  height: 100vh; height: 100lvh;
+  z-index: 0; pointer-events: none; opacity: 0;
   background:
     radial-gradient(120% 80% at 78% -8%, rgba(96,170,120,.40) 0%, rgba(96,170,120,0) 58%),
     radial-gradient(120% 90% at 12% 112%, rgba(20,58,40,.55) 0%, rgba(20,58,40,0) 60%),
@@ -50,15 +57,19 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
   will-change: opacity;
 }
 
-/* 3D canvas stage */
+/* 3D canvas stage — same large-viewport sizing as the green layer (see above)
+   so it never leaves a bottom gap on iOS first load. */
 .fm-stage {
-  position: fixed; inset: 0; width: 100%; height: 100%;
+  position: fixed; top: 0; left: 0; width: 100%;
+  height: 100vh; height: 100lvh;
   z-index: 1; pointer-events: none;
 }
 
 /* loader */
 .fm-loader {
-  position: fixed; inset: 0; z-index: 50; background: var(--plum-deep);
+  position: fixed; top: 0; left: 0; width: 100%;
+  height: 100vh; height: 100lvh;
+  z-index: 50; background: var(--plum-deep);
   display: flex; align-items: center; justify-content: center;
   transition: opacity .6s ease, visibility .6s;
 }
