@@ -75,6 +75,7 @@ The original `index.html` is kept as the design reference.
 Homepage notes:
 - A **"Who is Fox Meyer?" about teaser** sits at the bottom (`#fm-about`), below the Shop card and above the footer, linking to `/pages/about`.
 - The Three.js can animation lifts the cans away once you scroll past the Shop card (the exit guard is anchored to `#fm-about`), and the green backdrop fades back to plum over that same stretch.
+- **iOS first-load "bottom bar":** a known plum bar appears under the URL bar on the first uncached iOS load (clears on refresh). It's two OS-level mechanisms — Safari's WebGL-canvas toolbar (accepted, can't fix while keeping the 3D can) and an iOS Chrome in-page strip (fixed via a gradient crossfade in `fox-meyer-homepage.js`, see `lastBgKey`). **Full investigation + revisit options: [`ios-bottom-bar-investigation.md`](ios-bottom-bar-investigation.md). Read it before touching this again — don't re-derive.**
 
 ## Branded store pages
 The Shop hub, product page (PDP) and About page share one design system (mirrors the homepage: plum/cream/orange, Barlow Condensed). All are scoped under `.fms` and use the custom `fox-meyer` layout.
