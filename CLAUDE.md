@@ -23,6 +23,12 @@ Shopify storefront for Fox Meyer — specialty coffee (roasted in Dorval, Québe
 - **Pricing is provisional** — the per-can references and box totals may move once real packaging/vendor costs land (box cost is a placeholder, see Open flags). Build pricing so it's easy to adjust; don't hardcode totals where a can-sum will do.
 - **No cart-level percentage discounts** at any size.
 - **Both boxes ship free, always.** There is **no** free-shipping threshold (every DTC order is already 4+), so no "free shipping at 4+" Shopify Function and no "add X cans for free shipping" progress bar.
+
+### Shipping model (Settings → Shipping, "General profile") — how free shipping actually works
+Free shipping comes from the **shipping rate itself, not a discount.** (Until June 2026 it came from an automatic discount "You've unlocked FREE shipping" that blanket-zeroed *all* shipping; that discount was deleted because it also made Express free and masked a bad rate. Don't reintroduce it.)
+- **Domestic** zone: **Standard = $0.00, no condition** (free for every box) · **Express = $20.00** (paid upgrade, by design). Standard was previously "$12, free over $75" — a threshold 4-can boxes ($48–56) didn't clear, which broke free shipping for 4-can. Replaced with a flat $0 Standard.
+- **International / US Cross-border** zones: weight/price-based carrier + flat rates — **left as-is**, not part of the free-Standard rule.
+- If free shipping ever "disappears" for a box size, check the **Standard rate's conditions** first (a price/weight threshold), not for a discount.
 - Optional low-priority soft upsell: a single "one box away from the musette" nudge on the 4-can box prompting an upgrade to the 8-can box. This is *not* the old threshold mechanic.
 
 ## Subscriptions — DEFERRED (do not build for launch)
