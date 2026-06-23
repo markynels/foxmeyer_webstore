@@ -8,6 +8,8 @@
   var canvas   = document.getElementById('fm-stage');
   var loader   = document.getElementById('fm-loader');
   var bgGreen  = document.getElementById('fm-bg-green');
+  var fmPage   = document.querySelector('.fm-page');
+  var lastBase = '';
 
   /* ---------- renderer / scene ---------- */
   var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -304,7 +306,25 @@
       canB.spinner.rotation.y = cur.rot; setCanOpacity(canB, oB, solid);
       canB.group.position.x =  GAP * spe;
     }
-    if (bgGreen) bgGreen.style.opacity = (se * (1 - exitProg)).toFixed(3);
+    var greenAmt = se * (1 - exitProg);
+    if (bgGreen) bgGreen.style.opacity = greenAmt.toFixed(3);
+
+    /* iOS only paints position:fixed layers down to the *visual* viewport
+       bottom, so the ~70px strip under the collapsing URL bar (first load,
+       before the bar settles) shows the normal-flow page background rather
+       than this fixed green backdrop or the fixed canvas — a plum bar across
+       the bottom of the green sections. Drive the page/body/html base colour
+       along the same crossfade (plum-deepest -> forest-deep) so that strip
+       always matches the section instead of flashing plum. */
+    var base = 'rgb(' + Math.round(29 + (27 - 29) * greenAmt) + ',' +
+                        Math.round(12 + (58 - 12) * greenAmt) + ',' +
+                        Math.round(25 + (40 - 25) * greenAmt) + ')';
+    if (base !== lastBase) {
+      lastBase = base;
+      document.documentElement.style.backgroundColor = base;
+      if (document.body) document.body.style.backgroundColor = base;
+      if (fmPage) fmPage.style.backgroundColor = base;
+    }
 
     renderer.render(scene, camera);
   }
