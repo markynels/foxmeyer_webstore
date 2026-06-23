@@ -19,6 +19,21 @@
   }
   function el(sel, ctx) { return (ctx || document).querySelector(sel); }
   function els(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+  function cansWord(n) { return n === 1 ? 'can' : 'cans'; }
+
+  // The DTC store sells whole boxes only (a 4-can box or an 8-can box). The cart
+  // holds individual can variants, so a valid cart is any positive multiple of 4
+  // (every combination of 4- and 8-can boxes sums to a multiple of 4). The drawer
+  // lets shoppers rebalance Fox / Grenouille freely, but blocks checkout until the
+  // cans add up to complete boxes — mirroring the box builder's "add N more cans".
+  function boxState(count) {
+    var remainder = count % 4;
+    return {
+      complete: count > 0 && remainder === 0,
+      need: remainder === 0 ? 0 : 4 - remainder, // cans to reach the next full box
+      over: remainder                            // cans spilling past the last full box
+    };
+  }
 
   // The two coffees ship without a product photo, so show the fox / frog
   // character in the cart drawer to match the box builder.
@@ -100,11 +115,24 @@
         '</div></div>';
     }).join('');
 
-    body.innerHTML = '<div class="fms-ship-included">Free shipping included</div>' + lines;
+    var box = boxState(cart.item_count);
+    var banner = box.complete
+      ? '<div class="fms-ship-included">Free shipping included</div>'
+      : '<div class="fms-box-warn" role="status">' +
+          '<strong>Almost a box</strong>' +
+          '<span>Boxes come in 4 or 8 cans. Add ' + box.need + ' more ' + cansWord(box.need) +
+          ' — or remove ' + box.over + ' — to check out.</span>' +
+        '</div>';
+
+    body.innerHTML = banner + lines;
+
+    var action = box.complete
+      ? '<a class="fms-btn fms-btn-orange" href="' + ROOT + '/checkout">Checkout</a>'
+      : '<button type="button" class="fms-btn fms-btn-orange" disabled>Add ' + box.need + ' more ' + cansWord(box.need) + '</button>';
 
     foot.innerHTML =
       '<div class="fms-subtotal"><span>Subtotal</span><strong>' + money(cart.total_price) + '</strong></div>' +
-      '<a class="fms-btn fms-btn-orange" href="' + ROOT + '/checkout">Checkout</a>' +
+      action +
       '<p class="fms-drawer-fine">Taxes &amp; shipping calculated at checkout · Secure payment</p>';
 
     // bind line controls
