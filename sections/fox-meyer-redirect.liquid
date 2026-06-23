@@ -1,10 +1,10 @@
 {%- comment -%}
-  The DTC store has no public cart *page*. All cart interaction happens in the
-  custom slide-in drawer (see fox-meyer-store.js); the stock Dawn /cart page is
-  the one place that still exposes an unguarded checkout button + dynamic
-  (Shop Pay / Apple Pay / Google Pay) buttons, which would let a shopper check
-  out a cart that isn't a complete 4- or 8-can box. So /cart simply bounces to
-  the Shop hub / box builder. The drawer remains the only path to checkout.
+  Generic "send them to the shop" redirect for stock Dawn routes the custom
+  Fox Meyer storefront doesn't use (cart, collection, list-collections, search).
+  Those templates expose unbranded Dawn pages — and in the cart's case, an
+  unguarded checkout — so they bounce to the Shop hub / box builder instead.
+  All real shopping happens on the custom home / shop / product / about pages
+  and in the slide-in cart drawer.
 
   Guarded against design mode so the theme editor doesn't redirect the merchant.
 {%- endcomment -%}
@@ -23,5 +23,5 @@
 </div>
 
 {% schema %}
-{ "name": "Cart redirect", "settings": [] }
+{ "name": "Redirect to shop", "settings": [] }
 {% endschema %}

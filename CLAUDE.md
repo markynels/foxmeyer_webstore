@@ -4,7 +4,7 @@ Shopify storefront for Fox Meyer — specialty coffee (roasted in Dorval, Québe
 
 ## Product model (DTC) — source of truth
 
-> Decided June 2026 (`Fox_Meyer_Decisions_Summary_for_ClaudeCode.md`). This **supersedes** any earlier per-can / cart-tier-threshold logic. The current store code still reflects the old model — see "Migration" below.
+> Decided June 2026 (`Fox_Meyer_Decisions_Summary_for_ClaudeCode.md`). This **supersedes** any earlier per-can / cart-tier-threshold logic. The storefront has largely migrated to the box model; a couple of admin-side cleanup items remain — see "Migration" below.
 
 **The core of the business model is the two box formats.** DTC sells exactly two products — a **4-Can Box** and an **8-Can Box**. **No single cans on the DTC store.** Single cans still exist, but only through retail/wholesale placements (e.g. a boutique shelf); they are not a storefront SKU and must not appear on foxmeyer.co.
 
@@ -44,14 +44,21 @@ When it's eventually built (post-launch, design TBD; numbers below are **not fin
 
 ## Migration — old model → box model (cleanup checklist)
 
-The Shop hub and PDP were built around per-can add-to-cart + bundle tiers + a free-shipping threshold. These must be replaced by the two-box model above:
+The Shop hub and PDP were originally built around per-can add-to-cart + bundle tiers + a free-shipping threshold. Status of the migration to the two-box model:
 
-- [ ] Remove single-can DTC product / per-can add-to-cart from the Shop hub and PDP.
-- [ ] Build the 4-Can and 8-Can box products with a mix-and-match box builder.
-- [ ] Remove the cart-tier free-shipping threshold (the "free ship at 4+" Shopify automatic-discount Function).
-- [ ] Remove the "add N cans for free shipping" progress bar and any 1–3 can "grey zone" cart states.
-- [ ] Remove the bundle-tier pricing UI (no cart-level discounts).
-- [ ] Purge any "Fox Blend" wording from consumer-facing copy (replace with "Fox Meyer").
+- [x] Remove single-can DTC product / per-can add-to-cart from the Shop hub and PDP. *(Shop hub is the box builder; PDP "Add to a box" links to it.)*
+- [x] Build the 4-Can and 8-Can box with a mix-and-match box builder. *(Builder adds individual can variants summing to 4/8; see `sections/fox-meyer-shop.liquid`.)*
+- [ ] Remove the cart-tier free-shipping threshold (the "free ship at 4+" Shopify automatic-discount Function). **Still ACTIVE** (June 2026) — automatic discount titled "You've unlocked FREE shipping". Harmless (every box already qualifies) but off-model; remove in admin → Discounts.
+- [x] Remove the "add N cans for free shipping" progress bar and any 1–3 can "grey zone" cart states. *(No progress bar in the custom JS; the cart drawer now blocks checkout unless the can count is a complete set of boxes — see "Cart box-model enforcement" below.)*
+- [x] Remove the bundle-tier pricing UI (no cart-level discounts). *(Builder price = sum of cans.)*
+- [x] Purge any "Fox Blend" wording from consumer-facing copy. *(No occurrences in theme copy.)*
+
+### Cart box-model enforcement (done June 2026)
+- The custom cart **drawer** enforces the box rule: a valid cart is a positive multiple of 4 (every mix of 4- and 8-can boxes sums to a multiple of 4). When the count isn't a complete set of boxes, checkout is blocked with an "Almost a box" notice + a disabled "Add N more cans" button; rebalancing Fox/Grenouille stays free. See `boxState` in `assets/fox-meyer-store.js` and `.fms-box-warn` in `assets/fox-meyer-store.css`.
+- The stock Dawn **/cart** page was the bypass (its unguarded checkout + Shop Pay / Apple Pay / Google Pay buttons). It — plus the other unused Dawn routes `collection`, `list-collections`, `search` — now redirect to `/pages/shop` via `sections/fox-meyer-redirect.liquid`. The slide-in drawer is the only path to checkout.
+- **Residual gap (deferred):** a hand-typed `/checkout` after deliberately breaking a cart in the drawer is still technically possible. Only a Cart & Checkout Validation **Function** (a Shopify app/extension, not a theme change) closes it server-side; deferred as over-engineering for launch on the Basic plan. Revisit if real orders show broken boxes.
+- The collectible musette is bundled via an automatic **BxGy** discount ("Founder's Edition Musette", ACTIVE). Its product is ACTIVE but **not** published to the Online Store channel (0 inventory, not standalone-purchasable) — keep it that way; it is not a storefront SKU.
+- **Stray content removed (June 2026):** deleted the `le-cafe`, `preparation`, `fox-meyer` and `petite-grenouille` *content pages* (the last two duplicated the product PDPs) and the empty default **News** blog; trimmed the main menu to just "Shop". Real pages are `/pages/shop` and `/pages/about`.
 
 ### Open flags (track, not blockers)
 - **Box packaging cost is a placeholder** (~$1.25 4-can / ~$1.75 8-can) pending a real vendor quote/MOQ — confirm before committing packaging spend.
@@ -82,7 +89,7 @@ The Shop hub, product page (PDP) and About page share one design system (mirrors
 
 | File | Role |
 |---|---|
-| `sections/fox-meyer-shop.liquid` | Shop hub. **Currently** built around per-can add-to-cart + bundle tiers (old model) — slated to migrate to the 4-Can / 8-Can box builder (see "Migration"). Also: why, reviews, FAQ |
+| `sections/fox-meyer-shop.liquid` | Shop hub — the 4-Can / 8-Can mix-and-match box builder (price = sum of cans). Also: why, reviews, FAQ |
 | `sections/fox-meyer-product.liquid` | Branded PDP |
 | `sections/fox-meyer-about.liquid` | About / "Who is Fox Meyer?" — the people (Massilia, Marc, Armando), the freshness mission, fun & passion, closing CTA. Image pickers fall back to dashed placeholders until photos are uploaded |
 | `assets/fox-meyer-store.css` | Shared stylesheet for Shop + PDP + About, scoped under `.fms` |

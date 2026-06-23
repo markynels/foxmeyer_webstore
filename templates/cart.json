@@ -1,12 +1,12 @@
 {
   "sections": {
-    "cart-redirect": {
-      "type": "fox-meyer-cart-redirect",
+    "redirect": {
+      "type": "fox-meyer-redirect",
       "settings": {
       }
     }
   },
   "order": [
-    "cart-redirect"
+    "redirect"
   ]
 }

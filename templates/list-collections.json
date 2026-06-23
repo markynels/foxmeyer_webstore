@@ -1,17 +1,12 @@
 {
   "sections": {
-    "main": {
-      "type": "main-list-collections",
+    "redirect": {
+      "type": "fox-meyer-redirect",
       "settings": {
-        "title": "Collections",
-        "sort": "alphabetical",
-        "image_ratio": "square",
-        "columns_desktop": 3,
-        "columns_mobile": "2"
       }
     }
   },
   "order": [
-    "main"
+    "redirect"
   ]
 }
