@@ -1,0 +1,27 @@
+{%- comment -%}
+  The DTC store has no public cart *page*. All cart interaction happens in the
+  custom slide-in drawer (see fox-meyer-store.js); the stock Dawn /cart page is
+  the one place that still exposes an unguarded checkout button + dynamic
+  (Shop Pay / Apple Pay / Google Pay) buttons, which would let a shopper check
+  out a cart that isn't a complete 4- or 8-can box. So /cart simply bounces to
+  the Shop hub / box builder. The drawer remains the only path to checkout.
+
+  Guarded against design mode so the theme editor doesn't redirect the merchant.
+{%- endcomment -%}
+{%- unless request.design_mode -%}
+  <script>window.location.replace({{ routes.root_url | append: 'pages/shop' | json }});</script>
+  <meta http-equiv="refresh" content="0; url={{ routes.root_url }}pages/shop">
+{%- endunless -%}
+
+<div class="fms" style="min-height:40vh;display:grid;place-items:center;text-align:center;padding:80px 24px">
+  <div>
+    <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:20px;margin:0 0 12px">
+      Taking you to the shop…
+    </p>
+    <a href="{{ routes.root_url }}pages/shop#builder" style="color:inherit">Build your box →</a>
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Cart redirect", "settings": [] }
+{% endschema %}
