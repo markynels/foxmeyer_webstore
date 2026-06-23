@@ -8,6 +8,8 @@
   var canvas   = document.getElementById('fm-stage');
   var loader   = document.getElementById('fm-loader');
   var bgGreen  = document.getElementById('fm-bg-green');
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var lastTheme = '';
 
   /* ---------- renderer / scene ---------- */
   var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -304,7 +306,21 @@
       canB.spinner.rotation.y = cur.rot; setCanOpacity(canB, oB, solid);
       canB.group.position.x =  GAP * spe;
     }
-    if (bgGreen) bgGreen.style.opacity = (se * (1 - exitProg)).toFixed(3);
+    var greenAmt = se * (1 - exitProg);
+    if (bgGreen) bgGreen.style.opacity = greenAmt.toFixed(3);
+
+    /* Tint the iOS Safari toolbar (theme-color) along the same plum->green
+       crossfade as the backdrop. Safari samples a page colour once at load to
+       colour its chrome and keeps it for the whole page, so scrolling from the
+       plum hero into the green sections otherwise leaves a plum toolbar bar
+       over the green. Updating the meta keeps the chrome matched to the
+       section. */
+    if (themeMeta) {
+      var tc = 'rgb(' + Math.round(29 + (27 - 29) * greenAmt) + ',' +
+                        Math.round(12 + (58 - 12) * greenAmt) + ',' +
+                        Math.round(25 + (40 - 25) * greenAmt) + ')';
+      if (tc !== lastTheme) { lastTheme = tc; themeMeta.setAttribute('content', tc); }
+    }
 
     renderer.render(scene, camera);
   }
