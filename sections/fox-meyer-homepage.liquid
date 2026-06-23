@@ -291,34 +291,38 @@
 
   function sample() {
     var vv = window.visualViewport || {};
-    var W = window.innerWidth, ih = window.innerHeight, vh = vv.height || ih;
-    var opqBottom = opaqueAt(W / 2, ih - 3);
-    logHist(T0, ih, vh, opqBottom);
+    var ih = window.innerHeight, vh = vv.height || ih;
+    var visBottom = vh;                       // bottom of the visible (visual) viewport
+    var g = document.getElementById('fm-bg-green');
+    var gr = g ? g.getBoundingClientRect() : null;
+    var gOp = g ? parseFloat(g.style.opacity || '0') : 0;
+    // gap = how far the green backdrop's bottom edge falls SHORT of the visible bottom.
+    // >0 means plum shows through as a bar of that many px; <=0 means fully covered.
+    var gap = gr ? (visBottom - gr.bottom) : null;
+    var greenSection = gOp > 0.3;
+    var isBug = greenSection && gap != null && gap > 0.5;
+
+    logHist(T0, ih, vh, 'green.b=' + (gr ? gr.bottom.toFixed(0) : '?') + ' visBottom=' + visBottom.toFixed(0) +
+            ' gap=' + (gap != null ? gap.toFixed(0) : '?') + ' op=' + gOp.toFixed(2) + (isBug ? ' <<BAR>>' : ''));
 
     var lines = [];
-    lines.push('=== FM iOS BOTTOM-BAR DEBUG (always-on) ===');
-    lines.push('t=+' + ((Date.now() - T0) / 1000).toFixed(1) + 's  innerH=' + ih +
-               '  visualVP.h=' + (vv.height ? vv.height.toFixed(0) : '?') +
-               '  vv.offTop=' + (vv.offsetTop != null ? vv.offsetTop.toFixed(0) : '?') +
-               '  docEl.clientH=' + document.documentElement.clientHeight);
-    lines.push('scrollY=' + window.scrollY.toFixed(0) + '  scrollH=' + document.documentElement.scrollHeight +
-               '  dpr=' + (window.devicePixelRatio || 1) +
-               '  fontsReady=' + (document.fonts ? document.fonts.status : '?'));
-    lines.push('OPAQUE @bottom(y=' + (ih - 3) + '): ' + opqBottom);
-    lines.push('--- probes x=' + Math.round(W / 2) + ' ---');
-    [ih - 1, ih - 8, ih - 20, ih - 40, ih - 70, vh - 2].forEach(function (y) {
-      lines.push(' y=' + Math.round(y) + ' -> ' + name(document.elementFromPoint(W / 2, y)) + ' bg=' + rgb(document.elementFromPoint(W / 2, y)));
-    });
-    lines.push('--- rects ---');
-    ['.fm-page', '#fm-bg-green', '#fm-stage', '#fm-loader', '.fm-main', '.fm-footer'].forEach(function (s) { lines.push(rectOf(s)); });
-    var g = document.getElementById('fm-bg-green');
-    lines.push('bgGreen.opacity=' + (g ? (g.style.opacity || '(unset)') : 'absent') +
+    lines.push('=== FM BOTTOM-BAR DEBUG ===');
+    lines.push(isBug ? '*** BAR DETECTED: ' + gap.toFixed(0) + 'px plum gap ***' : 'status: ' + (greenSection ? 'green section, covered OK' : 'plum section'));
+    lines.push('GREEN COVER: green.bottom=' + (gr ? gr.bottom.toFixed(0) : '?') +
+               '  visibleBottom=' + visBottom.toFixed(0) + '  gap=' + (gap != null ? gap.toFixed(0) : '?') + 'px');
+    lines.push('green rect: top=' + (gr ? gr.top.toFixed(0) : '?') + ' h=' + (gr ? gr.height.toFixed(0) : '?') +
+               '  opacity=' + gOp.toFixed(2));
+    lines.push('innerH=' + ih + '  visualVP.h=' + (vv.height ? vv.height.toFixed(0) : '?') +
+               '  vv.offTop=' + (vv.offsetTop != null ? vv.offsetTop.toFixed(0) : '?'));
+    lines.push('scrollY=' + window.scrollY.toFixed(0) + '  t=+' + ((Date.now() - T0) / 1000).toFixed(1) + 's' +
                '  loader=' + (document.getElementById('fm-loader') ? 'present' : 'removed'));
     lines.push('--- HISTORY (newest first) ---');
     lines = lines.concat(hist);
 
     panel.textContent = lines.join('\n');
-    mark.style.top = (ih - 3) + 'px';
+    panel.style.background = isBug ? 'rgba(120,0,0,.95)' : 'rgba(0,0,0,.92)';
+    panel.style.color = isBug ? '#fff' : '#0f0';
+    mark.style.top = (visBottom - 1) + 'px';   // marker now at the VISIBLE bottom
   }
 
   sample();

@@ -41,14 +41,15 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 .fm-page ::selection { background: var(--orange); color: var(--plum-deepest); }
 
 /* green background layer — crossfades in on the Petite Grenouille section.
-   Anchored top + sized to the large viewport (100lvh, 100vh fallback) rather
-   than inset:0 — on iOS WebKit a fixed `bottom:0` is pinned to the *dynamic*
-   visual-viewport bottom (it tracks the URL bar), so with the bar expanded on
-   first load the layer fell short and the plum page background showed through
-   as a bar along the bottom edge. */
+   Overscanned well past the top & bottom of the viewport. On iOS the fixed
+   layer is offset upward by the toolbar height (~71px) as the URL bar
+   collapses, so a layer sized exactly to the viewport (100lvh) lands its
+   bottom edge right at the visible bottom with zero margin — any transient
+   toolbar state then exposes the plum page background as a bar. The 200px
+   overscan top & bottom guarantees full coverage in every toolbar state. */
 .fm-bg-green {
-  position: fixed; top: 0; left: 0; width: 100%;
-  height: 100vh; height: 100lvh;
+  position: fixed; left: 0; width: 100%;
+  top: -200px; height: calc(100vh + 400px); height: calc(100lvh + 400px);
   z-index: 0; pointer-events: none; opacity: 0;
   background:
     radial-gradient(120% 80% at 78% -8%, rgba(96,170,120,.40) 0%, rgba(96,170,120,0) 58%),
