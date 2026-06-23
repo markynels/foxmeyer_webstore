@@ -28,13 +28,11 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 .fm-page {
   font-family: var(--body);
   color: var(--cream);
-  /* Plain base colour only — the plum gradient lives on the fixed .fm-bg-plum
-     layer below. iOS clips position:fixed layers at the visual-viewport bottom,
-     leaving a ~70px strip under the collapsing URL bar that shows this
-     normal-flow background; the gradient used to live here and painted that
-     strip plum over the green sections. The base colour is driven in JS to
-     follow the green crossfade so the strip always matches the section. */
-  background-color: var(--plum-deepest);
+  background:
+    radial-gradient(120% 80% at 80% -10%, rgba(74,32,64,.55) 0%, rgba(74,32,64,0) 60%),
+    radial-gradient(120% 90% at 10% 110%, rgba(44,90,62,.22) 0%, rgba(44,90,62,0) 55%),
+    linear-gradient(180deg, var(--plum-deep) 0%, var(--plum-deepest) 100%);
+  background-attachment: fixed;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -42,19 +40,9 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 
 .fm-page ::selection { background: var(--orange); color: var(--plum-deepest); }
 
-/* plum backdrop layer — the base gradient, always on, behind the green
-   crossfade. Fixed (like .fm-bg-green) so the hero look is unchanged. */
-.fm-bg-plum {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    radial-gradient(120% 80% at 80% -10%, rgba(74,32,64,.55) 0%, rgba(74,32,64,0) 60%),
-    radial-gradient(120% 90% at 10% 110%, rgba(44,90,62,.22) 0%, rgba(44,90,62,0) 55%),
-    linear-gradient(180deg, var(--plum-deep) 0%, var(--plum-deepest) 100%);
-}
-
 /* green background layer — crossfades in on the Petite Grenouille section */
 .fm-bg-green {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0;
   background:
     radial-gradient(120% 80% at 78% -8%, rgba(96,170,120,.40) 0%, rgba(96,170,120,0) 58%),
     radial-gradient(120% 90% at 12% 112%, rgba(20,58,40,.55) 0%, rgba(20,58,40,0) 60%),
@@ -65,7 +53,7 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 /* 3D canvas stage */
 .fm-stage {
   position: fixed; inset: 0; width: 100%; height: 100%;
-  z-index: 2; pointer-events: none;
+  z-index: 1; pointer-events: none;
 }
 
 /* loader */
