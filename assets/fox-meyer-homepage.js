@@ -8,6 +8,8 @@
   var canvas   = document.getElementById('fm-stage');
   var loader   = document.getElementById('fm-loader');
   var bgGreen  = document.getElementById('fm-bg-green');
+  var fmPage   = document.querySelector('.fm-page');
+  var lastBgKey = '';
 
   /* ---------- renderer / scene ---------- */
   var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -304,7 +306,33 @@
       canB.spinner.rotation.y = cur.rot; setCanOpacity(canB, oB, solid);
       canB.group.position.x =  GAP * spe;
     }
-    if (bgGreen) bgGreen.style.opacity = (se * (1 - exitProg)).toFixed(3);
+    var greenAmt = se * (1 - exitProg);
+    if (bgGreen) bgGreen.style.opacity = greenAmt.toFixed(3);
+
+    /* iOS renders the page's own background in the thin strip under the URL
+       bar — the fixed backdrop + WebGL canvas are clipped before they reach
+       it, and only normal-flow content paints there. On iOS Chrome that strip
+       shows .fm-page's plum gradient as a bar over the green sections. Crossfade
+       .fm-page's gradient toward the green backdrop's gradient (green layers
+       faded in by greenAmt over the original plum layers) so the strip matches
+       the section. At greenAmt 0 this is byte-identical to the original plum,
+       and it's only ever visible in that strip (the fixed backdrop covers it
+       everywhere else). (iOS Safari draws a solid toolbar regardless because of
+       the WebGL canvas — an OS limit we accept; see the can animation.) */
+    if (fmPage) {
+      var o = greenAmt < 0 ? 0 : (greenAmt > 1 ? 1 : greenAmt);
+      var key = o.toFixed(2);
+      if (key !== lastBgKey) {
+        lastBgKey = key;
+        fmPage.style.backgroundImage =
+          'radial-gradient(120% 80% at 78% -8%, rgba(96,170,120,' + (0.40 * o).toFixed(3) + ') 0%, rgba(96,170,120,0) 58%),' +
+          'radial-gradient(120% 90% at 12% 112%, rgba(20,58,40,' + (0.55 * o).toFixed(3) + ') 0%, rgba(20,58,40,0) 60%),' +
+          'linear-gradient(180deg, rgba(44,90,62,' + o.toFixed(3) + ') 0%, rgba(27,58,40,' + o.toFixed(3) + ') 100%),' +
+          'radial-gradient(120% 80% at 80% -10%, rgba(74,32,64,.55) 0%, rgba(74,32,64,0) 60%),' +
+          'radial-gradient(120% 90% at 10% 110%, rgba(44,90,62,.22) 0%, rgba(44,90,62,0) 55%),' +
+          'linear-gradient(180deg, #241020 0%, #1d0c19 100%)';
+      }
+    }
 
     renderer.render(scene, camera);
   }
