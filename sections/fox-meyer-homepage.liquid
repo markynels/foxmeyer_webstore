@@ -240,6 +240,20 @@
 (function () {
   var T0 = Date.now();
 
+  // COLOR TEST: tint the usual plum surfaces so the bar's source is unambiguous.
+  //   bar RED   -> <html> background showing
+  //   bar BLUE  -> <body> background showing
+  //   bar LIME  -> .fm-page background showing
+  //   bar PLUM  -> none of the above (something else)
+  document.documentElement.style.setProperty('background', '#ff0000', 'important'); // html
+  function tintBodyPage() {
+    if (document.body) document.body.style.setProperty('background', '#0000ff', 'important'); // body
+    var p = document.querySelector('.fm-page');
+    if (p) p.style.setProperty('background', '#00ff00', 'important'); // fm-page
+  }
+  tintBodyPage();
+  document.addEventListener('DOMContentLoaded', tintBodyPage);
+
   var panel = document.createElement('div');
   panel.setAttribute('style', [
     'position:fixed','top:0','left:0','right:0','z-index:99999',
@@ -307,6 +321,7 @@
 
     var lines = [];
     lines.push('=== FM BOTTOM-BAR DEBUG ===');
+    lines.push('COLOR TEST: bar RED=html  BLUE=body  LIME=.fm-page  PLUM=other');
     lines.push(isBug ? '*** BAR DETECTED: ' + gap.toFixed(0) + 'px plum gap ***' : 'status: ' + (greenSection ? 'green section, covered OK' : 'plum section'));
     lines.push('GREEN COVER: green.bottom=' + (gr ? gr.bottom.toFixed(0) : '?') +
                '  visibleBottom=' + visBottom.toFixed(0) + '  gap=' + (gap != null ? gap.toFixed(0) : '?') + 'px');
