@@ -48,7 +48,7 @@ The Shop hub and PDP were originally built around per-can add-to-cart + bundle t
 
 - [x] Remove single-can DTC product / per-can add-to-cart from the Shop hub and PDP. *(Shop hub is the box builder; PDP "Add to a box" links to it.)*
 - [x] Build the 4-Can and 8-Can box with a mix-and-match box builder. *(Builder adds individual can variants summing to 4/8; see `sections/fox-meyer-shop.liquid`.)*
-- [ ] Remove the cart-tier free-shipping threshold (the "free ship at 4+" Shopify automatic-discount Function). **Still ACTIVE** (June 2026) — automatic discount titled "You've unlocked FREE shipping". Harmless (every box already qualifies) but off-model; remove in admin → Discounts.
+- [x] Remove the cart-tier free-shipping threshold (the "free ship at 4+" Shopify automatic-discount Function). *(Deleted June 2026 — the automatic discount "You've unlocked FREE shipping". Both boxes ship free unconditionally.)*
 - [x] Remove the "add N cans for free shipping" progress bar and any 1–3 can "grey zone" cart states. *(No progress bar in the custom JS; the cart drawer now blocks checkout unless the can count is a complete set of boxes — see "Cart box-model enforcement" below.)*
 - [x] Remove the bundle-tier pricing UI (no cart-level discounts). *(Builder price = sum of cans.)*
 - [x] Purge any "Fox Blend" wording from consumer-facing copy. *(No occurrences in theme copy.)*
