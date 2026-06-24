@@ -379,6 +379,13 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
   backdrop-filter: blur(2px);
 }
 .fms-drawer-overlay.is-open { opacity: 1; visibility: visible; }
+/* The drawer is appended to <body>, outside the .fms wrapper, so it misses the
+   .fms box-sizing reset. Re-apply it here or .fms-btn (width:100% + padding)
+   overflows its container and the Checkout button drifts right. */
+.fms-drawer,
+.fms-drawer *,
+.fms-drawer *::before,
+.fms-drawer *::after { box-sizing: border-box; }
 .fms-drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 61; width: min(440px,100%);
   background: linear-gradient(180deg, var(--plum-deep), var(--plum-deepest));
