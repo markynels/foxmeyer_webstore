@@ -130,6 +130,10 @@ Theme is translation-ready (July 2026). Plan: **French becomes the store default
 - Both headers render a native `{% form 'localization' %}` FR/EN toggle that appears automatically once a second locale is published. Don't hand-build language links.
 - Backups for the FR flip: theme EN state = **`english-baseline` branch**; admin-side EN content (products/SEO/pages/policies) = [`backup-english-content-2026-07.md`](backup-english-content-2026-07.md). Full string audit + remaining admin checklist: [`fr-translation-string-inventory.md`](fr-translation-string-inventory.md).
 
+## Copy Desk (tools/copy-desk)
+
+Local FR/EN copy dashboard (July 2026): `node "tools/copy-desk/server.mjs"` → localhost:4477. Shows all consumer-facing copy side by side — `fms` locale keys, section-settings copy from `templates/*.json`, and (once a Shopify custom-app token is in `tools/copy-desk/.env`) admin content + FR theme translations. Git-backed edits write files only (review + push manually); Shopify-backed FR edits are staged in `data/staged.json` and published in batch via `translationsRegister` with digest checks. Exports CSV/JSON/XLIFF; every change is appended to `tools/copy-desk/data/history.jsonl` (committed — the record base for future A/B testing; `variant`/`experiment` fields reserved). Lint blocks "Fox Blend", enforces ®/ᴹᴰ per language and placeholder parity. Setup + v1.5 backlog: [`tools/copy-desk/README.md`](tools/copy-desk/README.md). Zero npm dependencies — keep it that way (repo lives in Google Drive).
+
 ## SEO
 Head/meta/JSON-LD is implemented (July 2026): the `fox-meyer` layout renders `meta-tags` + `snippets/fox-meyer-structured-data.liquid` (Organization/WebSite/Product/Breadcrumb), the Shop section emits FAQPage schema from its FAQ settings, and the unused Dawn stub routes are noindexed in `theme.liquid`. **Do not add AggregateRating/Review schema while the on-page reviews are placeholders.** The full audit, keyword map, content/backlink playbook and pending admin checklist (domain, product photos, FR locale, GSC…) live in [`seo-strategy.md`](seo-strategy.md) — read it before touching SEO; don't re-derive.
 

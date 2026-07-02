@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "theme-dev",
+      "runtimeExecutable": "shopify",
+      "runtimeArgs": ["theme", "dev"],
+      "port": 9292
+    },
+    {
+      "name": "copy-desk",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/copy-desk/server.mjs"],
+      "port": 4477
+    }
+  ]
+}

@@ -4,3 +4,9 @@
 
 # Shopify CLI
 .shopify/
+
+# Copy Desk (tools/copy-desk) local state
+tools/copy-desk/.env
+tools/copy-desk/data/staged.json
+tools/copy-desk/data/shopify-cache.json
+tools/copy-desk/data/*.tmp
