@@ -122,6 +122,9 @@ git pull → edit local files → shopify theme dev (preview) → git commit & p
 - `main` → connected to the **live** theme; only tested, approved changes
 - (optional) `staging` → connected to a **draft** theme for work-in-progress; merge to `main` to go live
 
+## SEO
+Head/meta/JSON-LD is implemented (July 2026): the `fox-meyer` layout renders `meta-tags` + `snippets/fox-meyer-structured-data.liquid` (Organization/WebSite/Product/Breadcrumb), the Shop section emits FAQPage schema from its FAQ settings, and the unused Dawn stub routes are noindexed in `theme.liquid`. **Do not add AggregateRating/Review schema while the on-page reviews are placeholders.** The full audit, keyword map, content/backlink playbook and pending admin checklist (domain, product photos, FR locale, GSC…) live in [`seo-strategy.md`](seo-strategy.md) — read it before touching SEO; don't re-derive.
+
 ## Notes
 - Theme is password-protected with no traffic yet — safe to iterate.
 - Editable homepage content lives in section settings, not hardcoded — prefer updating schema defaults or the customizer over hardcoding copy.
