@@ -207,6 +207,27 @@
   {% render 'fox-meyer-footer', legal: section.settings.footer_legal, copyright: section.settings.footer_copyright %}
 </div>
 
+{%- comment -%} FAQPage JSON-LD mirroring the visible FAQ accordion above. {%- endcomment -%}
+{%- capture faq_entities -%}
+  {%- for i in (1..6) -%}
+    {%- assign qk = 'faq_' | append: i | append: '_q' -%}
+    {%- assign ak = 'faq_' | append: i | append: '_a' -%}
+    {%- if section.settings[qk] != blank and section.settings[ak] != blank -%}
+      {"@type":"Question","name":{{ section.settings[qk] | json }},"acceptedAnswer":{"@type":"Answer","text":{{ section.settings[ak] | json }}}},
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign faq_entities = faq_entities | strip | remove_last: ',' -%}
+{%- if faq_entities != blank -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{{ faq_entities }}]
+    }
+  </script>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "Fox Meyer Shop",

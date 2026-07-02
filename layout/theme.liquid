@@ -28,6 +28,18 @@
 
     {% render 'meta-tags' %}
 
+    {%- liquid
+      comment
+        cart / collection / list-collections / search are unused Dawn routes
+        that only render the fox-meyer-redirect stub — keep them out of the
+        index so they can't surface as thin/duplicate pages.
+      endcomment
+      assign fm_noindex_types = 'cart,collection,list-collections,search' | split: ','
+      if fm_noindex_types contains request.page_type
+        echo '<meta name="robots" content="noindex">'
+      endif
+    -%}
+
     <script type="module">
       import * as StandardEvents from 'https://cdn.shopify.com/storefront/standard-events.js';
 

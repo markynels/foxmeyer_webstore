@@ -4,20 +4,36 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="max-image-preview:large">
     <link rel="canonical" href="{{ canonical_url }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {%- if request.page_type == 'index' -%}
+      <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    {%- endif -%}
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
 
     <title>
-      {{ page_title }}
+      {{ page_title | escape }}
       {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{%- endunless -%}
     </title>
 
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
-    {% endif %}
+    {%- liquid
+      comment
+        page_description falls back to the shop description for the homepage;
+        while that admin field is empty, keep a hard fallback so no page ships
+        without a meta description.
+      endcomment
+      assign meta_description = page_description | default: 'Fox Meyer — specialty coffee roasted in Dorval, Québec, nitrogen-sealed in aluminium cans for roast-day freshness. Free shipping on every box, Canada-wide.'
+    -%}
+    <meta name="description" content="{{ meta_description | escape }}">
+
+    {% render 'meta-tags' %}
+    {% render 'fox-meyer-structured-data' %}
 
     {{ content_for_header }}
   </head>
