@@ -1,4 +1,71 @@
 {
+  "fms": {
+    "header": {
+      "shop": "Boutique",
+      "cart": "Panier",
+      "open_cart": "Ouvrir le panier",
+      "primary_nav": "Navigation principale"
+    },
+    "footer": {
+      "aria": "Pied de page",
+      "home": "Accueil",
+      "freshness": "Fraîcheur",
+      "blend": "Le mélange",
+      "shop_all": "La boutique",
+      "help_faq": "Aide et FAQ",
+      "copyright_fallback": "© Fox Meyer ᴹᴰ. Tous droits réservés."
+    },
+    "shop": {
+      "per_can": "/ canette",
+      "box_size_aria": "Format de boîte",
+      "remove_one": "Retirer une canette de {{ product }}",
+      "add_one": "Ajouter une canette de {{ product }}",
+      "can_count_aria": "Canettes de {{ product }}",
+      "progress_html": "<span data-box-count>0</span> sur <span data-box-target>4</span> canettes",
+      "box_total": "Total de la boîte",
+      "pick_your_cans": "Choisissez vos canettes"
+    },
+    "product": {
+      "reviews": "avis",
+      "per_can": "/ canette",
+      "view_image": "Voir l’image {{ number }}"
+    },
+    "redirect": {
+      "heading": "Direction la boutique…",
+      "link": "Composez votre boîte →"
+    },
+    "meta": {
+      "default_description": "Fox Meyer — café de spécialité torréfié à Dorval (Québec), scellé à l’azote en canette d’aluminium pour une fraîcheur de jour de torréfaction. Livraison gratuite sur chaque boîte, partout au Canada."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "shop": "Boutique"
+    },
+    "cart": {
+      "title": "Votre panier",
+      "aria": "Panier",
+      "close": "Fermer le panier",
+      "empty_html": "Votre panier est vide.<br>Composez une boîte — la livraison est offerte.",
+      "each": "chacune",
+      "decrease": "Diminuer",
+      "increase": "Augmenter",
+      "quantity": "Quantité",
+      "remove": "Retirer",
+      "free_shipping": "Livraison gratuite incluse",
+      "almost_title": "Presque une boîte",
+      "almost_body": "Les boîtes sont de 4 ou 8 canettes. Ajoutez-en {need} — ou retirez-en {over} — pour passer à la caisse.",
+      "checkout": "Passer à la caisse",
+      "add_more": "Ajoutez {count} {cans} de plus",
+      "subtotal": "Sous-total",
+      "fine_print": "Taxes et livraison calculées à la caisse · Paiement sécurisé",
+      "add_error": "Impossible d’ajouter au panier",
+      "added": "Ajouté au panier",
+      "add_box": "Ajouter la boîte — {total}",
+      "box_added": "Boîte de {size} canettes ajoutée",
+      "can_one": "canette",
+      "can_other": "canettes"
+    }
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Accéder à la boutique à l'aide d'un mot de passe :",

@@ -11,6 +11,7 @@
   var MONEY_FORMAT = CFG.moneyFormat || '${{amount}}';
   var ROOT = (CFG.routesRoot || '/').replace(/\/$/, '');
   var CHAR = { fox: CFG.lineFox || '', gren: CFG.lineGren || '' };  // builder character art for cart lines
+  var S = CFG.strings || {};  // locale strings (see snippets/fox-meyer-store-config.liquid); EN fallbacks below
 
   /* ---------- helpers ---------- */
   function money(cents) {
@@ -19,7 +20,10 @@
   }
   function el(sel, ctx) { return (ctx || document).querySelector(sel); }
   function els(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
-  function cansWord(n) { return n === 1 ? 'can' : 'cans'; }
+  function fmt(tpl, vars) {
+    return String(tpl).replace(/\{(\w+)\}/g, function (m, k) { return vars[k] != null ? vars[k] : m; });
+  }
+  function cansWord(n) { return n === 1 ? (S.canOne || 'can') : (S.canOther || 'cans'); }
 
   // The DTC store sells whole boxes only (a 4-can box or an 8-can box). The cart
   // holds individual can variants, so a valid cart is any positive multiple of 4
@@ -54,10 +58,10 @@
 
     drawer = document.createElement('aside');
     drawer.className = 'fms-drawer';
-    drawer.setAttribute('aria-label', 'Cart');
+    drawer.setAttribute('aria-label', S.cartAria || 'Cart');
     drawer.innerHTML =
-      '<div class="fms-drawer-head"><h2>Your cart</h2>' +
-      '<button class="fms-drawer-close" aria-label="Close cart">&times;</button></div>' +
+      '<div class="fms-drawer-head"><h2>' + (S.cartTitle || 'Your cart') + '</h2>' +
+      '<button class="fms-drawer-close" aria-label="' + (S.close || 'Close cart') + '">&times;</button></div>' +
       '<div class="fms-drawer-body"></div>' +
       '<div class="fms-drawer-foot"></div>';
     el('.fms-drawer-close', drawer).addEventListener('click', closeDrawer);
@@ -90,7 +94,7 @@
     var foot = el('.fms-drawer-foot', drawer);
 
     if (!cart.item_count) {
-      body.innerHTML = '<div class="fms-drawer-empty">Your cart is empty.<br>Build a box — shipping’s on us.</div>';
+      body.innerHTML = '<div class="fms-drawer-empty">' + (S.emptyHtml || 'Your cart is empty.<br>Build a box — shipping’s on us.') + '</div>';
       foot.innerHTML = '';
       return;
     }
@@ -102,38 +106,38 @@
         '<div class="fms-line-img">' + img + '</div>' +
         '<div class="fms-line-info">' +
           '<div class="fms-line-title">' + item.product_title + '</div>' +
-          '<div class="fms-line-meta">' + (item.variant_title && item.variant_title !== 'Default Title' ? item.variant_title + ' · ' : '') + money(item.price) + ' each</div>' +
+          '<div class="fms-line-meta">' + (item.variant_title && item.variant_title !== 'Default Title' ? item.variant_title + ' · ' : '') + money(item.price) + ' ' + (S.each || 'each') + '</div>' +
           '<div class="fms-line-bottom">' +
             '<div class="fms-qty fms-qty-sm">' +
-              '<button type="button" data-line-step="-1" data-line="' + (i + 1) + '" aria-label="Decrease">&minus;</button>' +
-              '<input type="text" inputmode="numeric" value="' + item.quantity + '" data-line-input="' + (i + 1) + '" aria-label="Quantity">' +
-              '<button type="button" data-line-step="1" data-line="' + (i + 1) + '" aria-label="Increase">+</button>' +
+              '<button type="button" data-line-step="-1" data-line="' + (i + 1) + '" aria-label="' + (S.decrease || 'Decrease') + '">&minus;</button>' +
+              '<input type="text" inputmode="numeric" value="' + item.quantity + '" data-line-input="' + (i + 1) + '" aria-label="' + (S.quantity || 'Quantity') + '">' +
+              '<button type="button" data-line-step="1" data-line="' + (i + 1) + '" aria-label="' + (S.increase || 'Increase') + '">+</button>' +
             '</div>' +
             '<div class="fms-line-price">' + money(item.line_price) + '</div>' +
           '</div>' +
-          '<button class="fms-line-remove" data-line-remove="' + (i + 1) + '">Remove</button>' +
+          '<button class="fms-line-remove" data-line-remove="' + (i + 1) + '">' + (S.remove || 'Remove') + '</button>' +
         '</div></div>';
     }).join('');
 
     var box = boxState(cart.item_count);
     var banner = box.complete
-      ? '<div class="fms-ship-included">Free shipping included</div>'
+      ? '<div class="fms-ship-included">' + (S.freeShipping || 'Free shipping included') + '</div>'
       : '<div class="fms-box-warn" role="status">' +
-          '<strong>Almost a box</strong>' +
-          '<span>Boxes come in 4 or 8 cans. Add ' + box.need + ' more ' + cansWord(box.need) +
-          ' — or remove ' + box.over + ' — to check out.</span>' +
+          '<strong>' + (S.almostTitle || 'Almost a box') + '</strong>' +
+          '<span>' + fmt(S.almostBody || 'Boxes come in 4 or 8 cans. Add {need} more {need_cans} — or remove {over} — to check out.',
+            { need: box.need, need_cans: cansWord(box.need), over: box.over }) + '</span>' +
         '</div>';
 
     body.innerHTML = banner + lines;
 
     var action = box.complete
-      ? '<a class="fms-btn fms-btn-orange" href="' + ROOT + '/checkout">Checkout</a>'
-      : '<button type="button" class="fms-btn fms-btn-orange" disabled>Add ' + box.need + ' more ' + cansWord(box.need) + '</button>';
+      ? '<a class="fms-btn fms-btn-orange" href="' + ROOT + '/checkout">' + (S.checkout || 'Checkout') + '</a>'
+      : '<button type="button" class="fms-btn fms-btn-orange" disabled>' + fmt(S.addMore || 'Add {count} more {cans}', { count: box.need, cans: cansWord(box.need) }) + '</button>';
 
     foot.innerHTML =
-      '<div class="fms-subtotal"><span>Subtotal</span><strong>' + money(cart.total_price) + '</strong></div>' +
+      '<div class="fms-subtotal"><span>' + (S.subtotal || 'Subtotal') + '</span><strong>' + money(cart.total_price) + '</strong></div>' +
       action +
-      '<p class="fms-drawer-fine">Taxes &amp; shipping calculated at checkout · Secure payment</p>';
+      '<p class="fms-drawer-fine">' + (S.finePrint || 'Taxes &amp; shipping calculated at checkout · Secure payment') + '</p>';
 
     // bind line controls
     els('[data-line-step]', body).forEach(function (b) {
@@ -174,12 +178,12 @@
     })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
       .then(function (res) {
-        if (!res.ok) { toast(res.data.description || 'Could not add to cart'); throw res.data; }
+        if (!res.ok) { toast(res.data.description || S.addError || 'Could not add to cart'); throw res.data; }
         return getCart();
       })
       .then(function (cart) {
         renderCart(cart);
-        toast(toastMsg || 'Added to cart');
+        toast(toastMsg || S.added || 'Added to cart');
         openDrawer();
       })
       .catch(function () {})
@@ -244,8 +248,8 @@
       addBtn.disabled = remaining !== 0;
       if (addLabel) {
         addLabel.textContent = remaining > 0
-          ? 'Add ' + remaining + ' more ' + (remaining === 1 ? 'can' : 'cans')
-          : 'Add box — ' + money(total());
+          ? fmt(S.addMore || 'Add {count} more {cans}', { count: remaining, cans: cansWord(remaining) })
+          : fmt(S.addBox || 'Add box — {total}', { total: money(total()) });
       }
 
       if (musette) musette.hidden = size !== 8;
@@ -287,7 +291,7 @@
       if (counts.fox  > 0) items.push({ id: cans.fox.id,  quantity: counts.fox });
       if (counts.gren > 0) items.push({ id: cans.gren.id, quantity: counts.gren });
       if (!items.length) return;
-      addItems(items, addBtn, size + '-can box added');
+      addItems(items, addBtn, fmt(S.boxAdded || '{size}-can box added', { size: size }));
     });
 
     setSize(4);

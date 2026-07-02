@@ -15,9 +15,6 @@
       "settings": {
         "shop_link": "shopify://pages/shop",
         "shop_button_label": "Shop",
-        "lang_link": "",
-        "lang_label": "FR",
-        "lang_code": "fr",
         "hero_heading": "Coffee, exactly as it should be.",
         "hero_subheading": "Nitrogen-sealed Specialty whole bean coffee · Roasted in Canada",
         "scroll_cue_text": "Spin the can",
@@ -89,7 +86,7 @@
         "about_copy": "A family, a roaster with thirty years in the trade, and one stubborn idea — that everyone, everywhere, deserves coffee exactly as it was meant to taste.",
         "about_link": "",
         "about_button_label": "Read our story",
-        "footer_legal": "",
+        "footer_legal": "Fox Meyer® — registered trademark.\nPrepared for Fox Meyer® by Las Fincas, 770 Halpern Ave., Dorval, QC H9P 1G6.\nPrepared in Canada using imported beans (Brazil & Colombia).\nRecycle where facilities exist.",
         "footer_copyright": "© 2026 Fox Meyer®. All rights reserved.",
         "footer_ext_link": "",
         "footer_ext_label": "foxmeyer.co"

@@ -11,14 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@600;700;800&display=swap">
 {{ 'fox-meyer-store.css' | asset_url | stylesheet_tag }}
 
-<script>
-  window.FMS = {
-    routesRoot: {{ routes.root_url | json }},
-    moneyFormat: {{ shop.money_format | json }},
-    lineFox: {{ 'fox-meyer-char-fox.png' | asset_img_url: '120x120' | json }},
-    lineGren: {{ 'fox-meyer-char-grenouille.png' | asset_img_url: '120x120' | json }}
-  };
-</script>
+{% render 'fox-meyer-store-config' %}
 <script src="{{ 'fox-meyer-store.js' | asset_url }}" defer></script>
 
 {%- assign p1 = section.settings.product_1 | default: all_products['fox-meyer'] -%}
@@ -46,7 +39,7 @@
              data-gren-id="{{ gv.id }}" data-gren-price="{{ gv.price }}">
 
           <!-- Size toggle -->
-          <div class="fms-box-sizes" role="tablist" aria-label="Box size">
+          <div class="fms-box-sizes" role="tablist" aria-label="{{ 'fms.shop.box_size_aria' | t }}">
             <button type="button" class="fms-box-size is-active" data-box-size="4" role="tab" aria-selected="true">
               <span class="fms-box-size-n">4</span>
               <span class="fms-box-size-l">{{ section.settings.box4_label }}</span>
@@ -68,7 +61,7 @@
               <div class="fms-box-can-info">
                 <h3 class="fms-box-can-name">{{ p1.title }}</h3>
                 {%- if section.settings.p1_notes != blank -%}<div class="fms-card-notes">{{ section.settings.p1_notes }}</div>{%- endif -%}
-                <div class="fms-box-can-price">{{ fv.price | money }} <small>/ can</small></div>
+                <div class="fms-box-can-price">{{ fv.price | money }} <small>{{ 'fms.shop.per_can' | t }}</small></div>
                 {%- if section.settings.p1_chips != blank -%}
                   <div class="fms-box-can-chips">
                     {%- assign p1chips = section.settings.p1_chips | split: '·' -%}
@@ -77,9 +70,9 @@
                 {%- endif -%}
               </div>
               <div class="fms-qty" data-can-stepper="fox">
-                <button type="button" data-can-step="-1" aria-label="Remove one {{ p1.title }}">&minus;</button>
-                <input type="text" inputmode="numeric" value="2" data-can-input="fox" aria-label="{{ p1.title }} cans" readonly>
-                <button type="button" data-can-step="1" aria-label="Add one {{ p1.title }}">+</button>
+                <button type="button" data-can-step="-1" aria-label="{{ 'fms.shop.remove_one' | t: product: p1.title }}">&minus;</button>
+                <input type="text" inputmode="numeric" value="2" data-can-input="fox" aria-label="{{ 'fms.shop.can_count_aria' | t: product: p1.title }}" readonly>
+                <button type="button" data-can-step="1" aria-label="{{ 'fms.shop.add_one' | t: product: p1.title }}">+</button>
               </div>
             </div>
 
@@ -91,7 +84,7 @@
               <div class="fms-box-can-info">
                 <h3 class="fms-box-can-name">{{ p2.title }}</h3>
                 {%- if section.settings.p2_notes != blank -%}<div class="fms-card-notes">{{ section.settings.p2_notes }}</div>{%- endif -%}
-                <div class="fms-box-can-price">{{ gv.price | money }} <small>/ can</small></div>
+                <div class="fms-box-can-price">{{ gv.price | money }} <small>{{ 'fms.shop.per_can' | t }}</small></div>
                 {%- if section.settings.p2_chips != blank -%}
                   <div class="fms-box-can-chips">
                     {%- assign p2chips = section.settings.p2_chips | split: '·' -%}
@@ -100,9 +93,9 @@
                 {%- endif -%}
               </div>
               <div class="fms-qty" data-can-stepper="gren">
-                <button type="button" data-can-step="-1" aria-label="Remove one {{ p2.title }}">&minus;</button>
-                <input type="text" inputmode="numeric" value="2" data-can-input="gren" aria-label="{{ p2.title }} cans" readonly>
-                <button type="button" data-can-step="1" aria-label="Add one {{ p2.title }}">+</button>
+                <button type="button" data-can-step="-1" aria-label="{{ 'fms.shop.remove_one' | t: product: p2.title }}">&minus;</button>
+                <input type="text" inputmode="numeric" value="2" data-can-input="gren" aria-label="{{ 'fms.shop.can_count_aria' | t: product: p2.title }}" readonly>
+                <button type="button" data-can-step="1" aria-label="{{ 'fms.shop.add_one' | t: product: p2.title }}">+</button>
               </div>
             </div>
           </div>
@@ -118,14 +111,14 @@
           <div class="fms-box-summary">
             <div class="fms-box-status">
               <div class="fms-box-dots" data-box-dots aria-hidden="true"></div>
-              <p class="fms-box-count"><span data-box-count>0</span> of <span data-box-target>4</span> cans</p>
+              <p class="fms-box-count">{{ 'fms.shop.progress_html' | t }}</p>
             </div>
             <div class="fms-box-total">
-              <span>Box total</span>
+              <span>{{ 'fms.shop.box_total' | t }}</span>
               <strong data-box-total>{{ 0 | money }}</strong>
             </div>
             <button type="button" class="fms-btn fms-btn-orange" data-box-add disabled>
-              <span data-box-add-label>Pick your cans</span>
+              <span data-box-add-label>{{ 'fms.shop.pick_your_cans' | t }}</span>
             </button>
           </div>
         </div>

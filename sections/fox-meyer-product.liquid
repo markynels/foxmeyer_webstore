@@ -8,14 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@600;700;800&display=swap">
 {{ 'fox-meyer-store.css' | asset_url | stylesheet_tag }}
 
-<script>
-  window.FMS = {
-    routesRoot: {{ routes.root_url | json }},
-    moneyFormat: {{ shop.money_format | json }},
-    lineFox: {{ 'fox-meyer-char-fox.png' | asset_img_url: '120x120' | json }},
-    lineGren: {{ 'fox-meyer-char-grenouille.png' | asset_img_url: '120x120' | json }}
-  };
-</script>
+{% render 'fox-meyer-store-config' %}
 <script src="{{ 'fox-meyer-store.js' | asset_url }}" defer></script>
 
 {%- assign v = product.selected_or_first_available_variant -%}
@@ -40,7 +33,7 @@
         {%- if product.media.size > 1 -%}
           <div class="fms-thumbs">
             {%- for media in product.media limit: 5 -%}
-              <button type="button" class="fms-thumb {% if forloop.first %}is-active{% endif %}" data-thumb="{{ media | image_url: width: 900 }}" aria-label="View image {{ forloop.index }}">
+              <button type="button" class="fms-thumb {% if forloop.first %}is-active{% endif %}" data-thumb="{{ media | image_url: width: 900 }}" aria-label="{{ 'fms.product.view_image' | t: number: forloop.index }}">
                 <img src="{{ media | image_url: width: 150 }}" alt="" loading="lazy" width="150" height="150">
               </button>
             {%- endfor -%}
@@ -56,7 +49,7 @@
         {%- if section.settings.show_ratings and section.settings.rating != blank -%}
           <div class="fms-rating">
             <span class="fms-stars" aria-hidden="true">★★★★★</span>
-            <span class="fms-rating-text">{{ section.settings.rating }}{% if section.settings.rating_count != blank %} · {{ section.settings.rating_count }} reviews{% endif %}</span>
+            <span class="fms-rating-text">{{ section.settings.rating }}{% if section.settings.rating_count != blank %} · {{ section.settings.rating_count }} {{ 'fms.product.reviews' | t }}{% endif %}</span>
           </div>
         {%- endif -%}
 
@@ -119,10 +112,10 @@
     <!-- Trust row -->
     <section class="fms-container fms-section" id="why">
       <div class="fms-values">
-        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="3" width="10" height="18" rx="3"/><path d="M7 8h10" stroke-linecap="round"/></svg></div><h3>Nitrogen-sealed</h3><p>{{ section.settings.why_1 }}</p></div>
-        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="14" r="6"/><path d="M9 3l3 6 3-6" stroke-linejoin="round"/></svg></div><h3>Competition-grade</h3><p>{{ section.settings.why_2 }}</p></div>
-        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h11v9H2zM13 10h5l3 3v3h-8z" stroke-linejoin="round"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></div><h3>Ships in 1–2 days</h3><p>{{ section.settings.why_3 }}</p></div>
-        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>100-day guarantee</h3><p>{{ section.settings.why_4 }}</p></div>
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="3" width="10" height="18" rx="3"/><path d="M7 8h10" stroke-linecap="round"/></svg></div><h3>{{ section.settings.why_1_title }}</h3><p>{{ section.settings.why_1 }}</p></div>
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="14" r="6"/><path d="M9 3l3 6 3-6" stroke-linejoin="round"/></svg></div><h3>{{ section.settings.why_2_title }}</h3><p>{{ section.settings.why_2 }}</p></div>
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h11v9H2zM13 10h5l3 3v3h-8z" stroke-linejoin="round"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></div><h3>{{ section.settings.why_3_title }}</h3><p>{{ section.settings.why_3 }}</p></div>
+        <div class="fms-value"><div class="fms-value-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>{{ section.settings.why_4_title }}</h3><p>{{ section.settings.why_4 }}</p></div>
       </div>
     </section>
   </div>
@@ -131,7 +124,7 @@
 
   <!-- Sticky mobile buy bar -->
   <div class="fms-stickybar" aria-hidden="true">
-    <span class="fms-price">{{ v.price | money }}<small>/ can</small></span>
+    <span class="fms-price">{{ v.price | money }}<small>{{ 'fms.product.per_can' | t }}</small></span>
     <a class="fms-btn fms-btn-orange" href="{{ routes.root_url }}pages/shop#builder">{{ section.settings.buy_cta | default: 'Add to a box' }}</a>
   </div>
 </div>
@@ -168,10 +161,14 @@
     { "type": "text", "id": "g_recipe_time", "label": "Time s", "default": "30" },
 
     { "type": "header", "content": "Why Fox Meyer (trust row)" },
-    { "type": "textarea", "id": "why_1", "label": "Nitrogen-sealed", "default": "No oxygen, no light — roast-day flavour, locked in." },
-    { "type": "textarea", "id": "why_2", "label": "Competition-grade", "default": "SCA 86+ beans, small-batch roasted in Québec." },
-    { "type": "textarea", "id": "why_3", "label": "Fast shipping", "default": "Roasted to order, shipped from Dorval in 1–2 days." },
-    { "type": "textarea", "id": "why_4", "label": "Guarantee", "default": "Don’t love it within 100 days? We’ll make it right." },
+    { "type": "text", "id": "why_1_title", "label": "Title 1", "default": "Nitrogen-sealed" },
+    { "type": "textarea", "id": "why_1", "label": "Body 1", "default": "No oxygen, no light — roast-day flavour, locked in." },
+    { "type": "text", "id": "why_2_title", "label": "Title 2", "default": "Competition-grade" },
+    { "type": "textarea", "id": "why_2", "label": "Body 2", "default": "SCA 86+ beans, small-batch roasted in Québec." },
+    { "type": "text", "id": "why_3_title", "label": "Title 3", "default": "Ships in 1–2 days" },
+    { "type": "textarea", "id": "why_3", "label": "Body 3", "default": "Roasted to order, shipped from Dorval in 1–2 days." },
+    { "type": "text", "id": "why_4_title", "label": "Title 4", "default": "100-day guarantee" },
+    { "type": "textarea", "id": "why_4", "label": "Body 4", "default": "Don’t love it within 100 days? We’ll make it right." },
 
     { "type": "header", "content": "Footer" },
     { "type": "textarea", "id": "footer_legal", "label": "Legal text", "default": "Fox Meyer® — registered trademark. Prepared in Canada using imported beans. Recycle where facilities exist." },

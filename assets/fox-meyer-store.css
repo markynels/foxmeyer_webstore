@@ -59,6 +59,15 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
   color: var(--cream-dim); text-decoration: none; transition: color .18s ease;
 }
 .fms-nav-link:hover { color: var(--cream); }
+.fms-lang-form { display: inline-flex; align-items: center; }
+.fms-lang {
+  font-family: var(--display); font-weight: 600; font-size: 14px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--cream-dim); transition: color .18s ease;
+  background: none; border: 0; padding: 0; cursor: pointer;
+}
+.fms-lang:hover { color: var(--cream); }
+.fms-lang:focus-visible { outline: 2px solid var(--cream); outline-offset: 3px; border-radius: 4px; }
 .fms-header-btn {
   font-family: var(--display); font-weight: 700; letter-spacing: .06em;
   text-transform: uppercase; text-decoration: none;

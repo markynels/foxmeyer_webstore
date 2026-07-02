@@ -122,6 +122,14 @@ git pull → edit local files → shopify theme dev (preview) → git commit & p
 - `main` → connected to the **live** theme; only tested, approved changes
 - (optional) `staging` → connected to a **draft** theme for work-in-progress; merge to `main` to go live
 
+## Localization (FR/EN)
+
+Theme is translation-ready (July 2026). Plan: **French becomes the store default** (root URLs), English moves to `/en`, both published via Translate & Adapt. How it's wired:
+- All custom consumer-facing strings live in `locales/en.default.json` + `locales/fr.json` under the **`fms` namespace**; page copy stays in section settings (translatable per page in Translate & Adapt). Don't hardcode consumer-facing English in Liquid or JS — add an `fms` locale key.
+- The cart drawer / box builder JS reads `window.FMS.strings`, emitted by `snippets/fox-meyer-store-config.liquid` (rendered by the Shop + Product sections). `{count}`-style single-brace placeholders are interpolated in JS — not Liquid.
+- Both headers render a native `{% form 'localization' %}` FR/EN toggle that appears automatically once a second locale is published. Don't hand-build language links.
+- Backups for the FR flip: theme EN state = **`english-baseline` branch**; admin-side EN content (products/SEO/pages/policies) = [`backup-english-content-2026-07.md`](backup-english-content-2026-07.md). Full string audit + remaining admin checklist: [`fr-translation-string-inventory.md`](fr-translation-string-inventory.md).
+
 ## SEO
 Head/meta/JSON-LD is implemented (July 2026): the `fox-meyer` layout renders `meta-tags` + `snippets/fox-meyer-structured-data.liquid` (Organization/WebSite/Product/Breadcrumb), the Shop section emits FAQPage schema from its FAQ settings, and the unused Dawn stub routes are noindexed in `theme.liquid`. **Do not add AggregateRating/Review schema while the on-page reviews are placeholders.** The full audit, keyword map, content/backlink playbook and pending admin checklist (domain, product photos, FR locale, GSC…) live in [`seo-strategy.md`](seo-strategy.md) — read it before touching SEO; don't re-derive.
 

@@ -1,0 +1,40 @@
+{%- comment -%}
+  Emits window.FMS — config + locale strings for fox-meyer-store.js.
+  Rendered once by the Shop and Product sections, before the script loads.
+  Strings come from locales/*.json (fms namespace) so Translate & Adapt can
+  localize the cart drawer / box builder, which are built in JavaScript.
+  {count}/{need}/{over}/{size}/{total}/{cans} placeholders are interpolated
+  in JS at runtime — they are NOT Liquid variables, leave them single-braced.
+{%- endcomment -%}
+<script>
+  window.FMS = {
+    routesRoot: {{ routes.root_url | json }},
+    moneyFormat: {{ shop.money_format | json }},
+    lineFox: {{ 'fox-meyer-char-fox.png' | asset_img_url: '120x120' | json }},
+    lineGren: {{ 'fox-meyer-char-grenouille.png' | asset_img_url: '120x120' | json }},
+    strings: {
+      cartTitle: {{ 'fms.cart.title' | t | json }},
+      cartAria: {{ 'fms.cart.aria' | t | json }},
+      close: {{ 'fms.cart.close' | t | json }},
+      emptyHtml: {{ 'fms.cart.empty_html' | t | json }},
+      each: {{ 'fms.cart.each' | t | json }},
+      decrease: {{ 'fms.cart.decrease' | t | json }},
+      increase: {{ 'fms.cart.increase' | t | json }},
+      quantity: {{ 'fms.cart.quantity' | t | json }},
+      remove: {{ 'fms.cart.remove' | t | json }},
+      freeShipping: {{ 'fms.cart.free_shipping' | t | json }},
+      almostTitle: {{ 'fms.cart.almost_title' | t | json }},
+      almostBody: {{ 'fms.cart.almost_body' | t | json }},
+      checkout: {{ 'fms.cart.checkout' | t | json }},
+      addMore: {{ 'fms.cart.add_more' | t | json }},
+      subtotal: {{ 'fms.cart.subtotal' | t | json }},
+      finePrint: {{ 'fms.cart.fine_print' | t | json }},
+      addError: {{ 'fms.cart.add_error' | t | json }},
+      added: {{ 'fms.cart.added' | t | json }},
+      addBox: {{ 'fms.cart.add_box' | t | json }},
+      boxAdded: {{ 'fms.cart.box_added' | t | json }},
+      canOne: {{ 'fms.cart.can_one' | t | json }},
+      canOther: {{ 'fms.cart.can_other' | t | json }}
+    }
+  };
+</script>

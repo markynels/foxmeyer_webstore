@@ -26,9 +26,11 @@
       comment
         page_description falls back to the shop description for the homepage;
         while that admin field is empty, keep a hard fallback so no page ships
-        without a meta description.
+        without a meta description. The fallback lives in locales/*.json (fms
+        namespace) so it localizes per published language.
       endcomment
-      assign meta_description = page_description | default: 'Fox Meyer — specialty coffee roasted in Dorval, Québec, nitrogen-sealed in aluminium cans for roast-day freshness. Free shipping on every box, Canada-wide.'
+      assign meta_fallback = 'fms.meta.default_description' | t
+      assign meta_description = page_description | default: meta_fallback
     -%}
     <meta name="description" content="{{ meta_description | escape }}">
 

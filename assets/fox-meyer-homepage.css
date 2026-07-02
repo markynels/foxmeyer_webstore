@@ -77,11 +77,13 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 .fm-header .fm-wordmark img { height: 100%; width: auto; display: block; }
 .fm-header-actions { display: flex; align-items: center; gap: 18px; }
 
+.fm-lang-form { display: inline-flex; align-items: center; }
 .fm-lang {
   font-family: var(--display); font-weight: 600; font-size: 14px;
   letter-spacing: .22em; text-transform: uppercase;
   color: var(--cream-faint); text-decoration: none;
   transition: color .18s ease;
+  background: none; border: 0; padding: 0; cursor: pointer;
 }
 .fm-lang:hover { color: var(--cream); }
 .fm-lang:focus-visible { outline: 2px solid var(--cream); outline-offset: 3px; border-radius: 4px; }

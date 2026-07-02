@@ -1,4 +1,71 @@
 {
+  "fms": {
+    "header": {
+      "shop": "Shop",
+      "cart": "Cart",
+      "open_cart": "Open cart",
+      "primary_nav": "Primary"
+    },
+    "footer": {
+      "aria": "Footer",
+      "home": "Home",
+      "freshness": "Freshness",
+      "blend": "The blend",
+      "shop_all": "Shop all",
+      "help_faq": "Help & FAQ",
+      "copyright_fallback": "© Fox Meyer®. All rights reserved."
+    },
+    "shop": {
+      "per_can": "/ can",
+      "box_size_aria": "Box size",
+      "remove_one": "Remove one {{ product }}",
+      "add_one": "Add one {{ product }}",
+      "can_count_aria": "{{ product }} cans",
+      "progress_html": "<span data-box-count>0</span> of <span data-box-target>4</span> cans",
+      "box_total": "Box total",
+      "pick_your_cans": "Pick your cans"
+    },
+    "product": {
+      "reviews": "reviews",
+      "per_can": "/ can",
+      "view_image": "View image {{ number }}"
+    },
+    "redirect": {
+      "heading": "Taking you to the shop…",
+      "link": "Build your box →"
+    },
+    "meta": {
+      "default_description": "Fox Meyer — specialty coffee roasted in Dorval, Québec, nitrogen-sealed in aluminium cans for roast-day freshness. Free shipping on every box, Canada-wide."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "shop": "Shop"
+    },
+    "cart": {
+      "title": "Your cart",
+      "aria": "Cart",
+      "close": "Close cart",
+      "empty_html": "Your cart is empty.<br>Build a box — shipping’s on us.",
+      "each": "each",
+      "decrease": "Decrease",
+      "increase": "Increase",
+      "quantity": "Quantity",
+      "remove": "Remove",
+      "free_shipping": "Free shipping included",
+      "almost_title": "Almost a box",
+      "almost_body": "Boxes come in 4 or 8 cans. Add {need} more {need_cans} — or remove {over} — to check out.",
+      "checkout": "Checkout",
+      "add_more": "Add {count} more {cans}",
+      "subtotal": "Subtotal",
+      "fine_print": "Taxes & shipping calculated at checkout · Secure payment",
+      "add_error": "Could not add to cart",
+      "added": "Added to cart",
+      "add_box": "Add box — {total}",
+      "box_added": "{size}-can box added",
+      "can_one": "can",
+      "can_other": "cans"
+    }
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Enter store using password:",

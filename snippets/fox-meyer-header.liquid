@@ -2,21 +2,34 @@
   Branded store header (matches the homepage). Usage:
     {% render 'fox-meyer-header', shop_url: '/pages/shop' %}
   Pass on_shop: true to hide the redundant Shop link when already on the Shop page.
+  The FR/EN toggle renders only once a second locale is published (native
+  localization form — do not replace with a hand-built language link).
 {%- endcomment -%}
 <header class="fms-header">
   <a class="fms-wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
     <img src="{{ 'fox-meyer-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="120" height="35">
   </a>
-  <nav class="fms-nav" aria-label="Primary">
+  <nav class="fms-nav" aria-label="{{ 'fms.header.primary_nav' | t }}">
+    {%- if localization.available_languages.size > 1 -%}
+      {%- form 'localization', class: 'fms-lang-form' -%}
+        {%- for lang in localization.available_languages -%}
+          {%- unless lang.iso_code == localization.language.iso_code -%}
+            <button class="fms-lang" type="submit" name="locale_code" value="{{ lang.iso_code }}" lang="{{ lang.iso_code }}" aria-label="{{ lang.endonym_name | capitalize }}">
+              {{ lang.iso_code | upcase }}
+            </button>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endform -%}
+    {%- endif -%}
     {%- unless on_shop -%}
-      <a class="fms-header-btn" href="{{ shop_url | default: '/pages/shop' }}">Shop</a>
+      <a class="fms-header-btn" href="{{ shop_url | default: '/pages/shop' }}">{{ 'fms.header.shop' | t }}</a>
     {%- endunless -%}
-    <a class="fms-cart-link" href="{{ routes.cart_url }}" data-open-cart aria-label="Open cart">
+    <a class="fms-cart-link" href="{{ routes.cart_url }}" data-open-cart aria-label="{{ 'fms.header.open_cart' | t }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
         <path d="M6 7h12l-1 13H7L6 7Z" stroke-linejoin="round"/>
         <path d="M9 7a3 3 0 0 1 6 0" stroke-linecap="round"/>
       </svg>
-      <span>Cart</span>
+      <span>{{ 'fms.header.cart' | t }}</span>
       <span class="fms-cart-count" {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
     </a>
   </nav>

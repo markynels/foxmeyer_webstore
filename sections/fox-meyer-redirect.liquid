@@ -16,9 +16,9 @@
 <div class="fms" style="min-height:40vh;display:grid;place-items:center;text-align:center;padding:80px 24px">
   <div>
     <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:20px;margin:0 0 12px">
-      Taking you to the shop…
+      {{ 'fms.redirect.heading' | t }}
     </p>
-    <a href="{{ routes.root_url }}pages/shop#builder" style="color:inherit">Build your box →</a>
+    <a href="{{ routes.root_url }}pages/shop#builder" style="color:inherit">{{ 'fms.redirect.link' | t }}</a>
   </div>
 </div>
 

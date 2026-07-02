@@ -12,13 +12,14 @@
         <p class="fms-fine">{{ legal | newline_to_br }}</p>
       {%- endif -%}
     </div>
-    <nav class="fms-footer-links" aria-label="Footer">
-      <a href="{{ routes.root_url }}">Home</a>
-      <a href="{{ routes.root_url }}#fm-fraicheur">Freshness</a>
-      <a href="{{ routes.root_url }}#fm-origine">The blend</a>
-      <a href="{{ routes.all_products_collection_url | default: '/collections/all' }}">Shop all</a>
-      <a href="{{ routes.search_url }}?q=faq">Help &amp; FAQ</a>
+    <nav class="fms-footer-links" aria-label="{{ 'fms.footer.aria' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'fms.footer.home' | t }}</a>
+      <a href="{{ routes.root_url }}#fm-fraicheur">{{ 'fms.footer.freshness' | t }}</a>
+      <a href="{{ routes.root_url }}#fm-origine">{{ 'fms.footer.blend' | t }}</a>
+      <a href="{{ routes.root_url }}pages/shop#builder">{{ 'fms.footer.shop_all' | t }}</a>
+      <a href="{{ routes.root_url }}pages/shop#faq">{{ 'fms.footer.help_faq' | t }}</a>
     </nav>
   </div>
-  <p class="fms-footer-copy">{{ copyright | default: '© Fox Meyer®. All rights reserved.' }}</p>
+  {%- assign copyright_fallback = 'fms.footer.copyright_fallback' | t -%}
+  <p class="fms-footer-copy">{{ copyright | default: copyright_fallback }}</p>
 </footer>

@@ -31,10 +31,17 @@
       <img src="{{ 'fox-meyer-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="120" height="35">
     </a>
     <div class="fm-header-actions">
-      {%- if section.settings.lang_link != blank -%}
-        <a class="fm-lang" href="{{ section.settings.lang_link }}" hreflang="{{ section.settings.lang_code }}">
-          {{ section.settings.lang_label }}
-        </a>
+      {%- comment -%} Native language toggle — renders only once a second locale is published. {%- endcomment -%}
+      {%- if localization.available_languages.size > 1 -%}
+        {%- form 'localization', class: 'fm-lang-form' -%}
+          {%- for lang in localization.available_languages -%}
+            {%- unless lang.iso_code == localization.language.iso_code -%}
+              <button class="fm-lang" type="submit" name="locale_code" value="{{ lang.iso_code }}" lang="{{ lang.iso_code }}" aria-label="{{ lang.endonym_name | capitalize }}">
+                {{ lang.iso_code | upcase }}
+              </button>
+            {%- endunless -%}
+          {%- endfor -%}
+        {%- endform -%}
       {%- endif -%}
       <a class="fm-btn fm-btn-orange" href="{{ section.settings.shop_link }}">
         {{ section.settings.shop_button_label }}
@@ -254,23 +261,6 @@
       "id": "shop_button_label",
       "label": "Shop button label",
       "default": "Shop"
-    },
-    {
-      "type": "url",
-      "id": "lang_link",
-      "label": "Language toggle link (e.g. /fr)"
-    },
-    {
-      "type": "text",
-      "id": "lang_label",
-      "label": "Language toggle label",
-      "default": "FR"
-    },
-    {
-      "type": "text",
-      "id": "lang_code",
-      "label": "Language hreflang code",
-      "default": "fr"
     },
     {
       "type": "header",
