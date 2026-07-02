@@ -16,20 +16,20 @@
 
 ### Fox Meyer (`fox-meyer`) — ACTIVE, $12.00
 **SEO title:** Fox Meyer — Nitrogen-Sealed Specialty Espresso Blend
-**SEO description:** SCA 86+ espresso blend from Brazil & Colombia, roasted in Dorval, Québec and nitrogen-sealed in a can for roast-day freshness. Caramel, dark cocoa, toasted almond.
+**SEO description:** SCA 85+ espresso blend from Brazil & Colombia, roasted in Dorval, Québec and nitrogen-sealed in a can for roast-day freshness. Caramel, dark cocoa, toasted almond.
 
 **Description (HTML):**
 ```html
-<p>Fox Meyer is our flagship espresso blend — competition-grade beans from Brazil and Colombia, scoring SCA 86+, small-batch roasted in Dorval, Québec and nitrogen-sealed in aluminium within hours of roasting.</p><p>The result is roast-day freshness in every cup: a medium-dark roast with <strong>velvety caramel, dark cocoa and toasted almond</strong>, a round body and a clean, lingering finish. Pulls a beautiful espresso and holds its own through milk.</p><p>150 g whole bean — about 18–20 espressos per can.</p>
+<p>Fox Meyer is our flagship espresso blend — competition-grade beans from Brazil and Colombia, scoring SCA 85+, small-batch roasted in Dorval, Québec and nitrogen-sealed in aluminium within hours of roasting.</p><p>The result is roast-day freshness in every cup: a medium-dark roast with <strong>velvety caramel, dark cocoa and toasted almond</strong>, a round body and a clean, lingering finish. Pulls a beautiful espresso and holds its own through milk.</p><p>150 g whole bean — about 7-8 espressos per can.</p>
 ```
 
 ### Petite Grenouille (`petite-grenouille`) — ACTIVE, $14.00
 **SEO title:** Petite Grenouille — Specialty Coffee in a Can | Fox Meyer
-**SEO description:** Rich, full-bodied SCA 86+ blend from Brazil, India & Guatemala — roasted in Dorval, Québec, nitrogen-sealed for freshness. Molasses, dark cocoa, walnut finish.
+**SEO description:** Rich, full-bodied SCA 85+ blend from Brazil, India & Guatemala — roasted in Dorval, Québec, nitrogen-sealed for freshness. Molasses, dark cocoa, walnut finish.
 
 **Description (HTML):**
 ```html
-<p>Petite Grenouille is the second expression in the Fox Meyer line — the same nitrogen-sealed freshness and competition-grade sourcing (SCA 86+), with beans from Brazil, India and Guatemala for a deeper, rounder cup.</p><p>A medium-dark roast with notes of <strong>molasses, dark cocoa, toasted almond and walnut</strong>: richer and more full-bodied than the flagship, with a smooth, syrupy finish. Roasted to order in Dorval, Québec.</p><p>150 g whole bean — about 18–20 espressos per can.</p>
+<p>Petite Grenouille is the second expression in the Fox Meyer line — the same nitrogen-sealed freshness and competition-grade sourcing (SCA 85+), with beans from Brazil, India and Guatemala for a deeper, rounder cup.</p><p>A medium-dark roast with notes of <strong>molasses, dark cocoa, toasted almond and walnut</strong>: richer and more full-bodied than the flagship, with a smooth, syrupy finish. Roasted to order in Dorval, Québec.</p><p>150 g whole bean — about 7-8 espressos per can.</p>
 ```
 
 ### Founder's Edition Musette (`founders-edition-musette`) — ACTIVE, $28.00
