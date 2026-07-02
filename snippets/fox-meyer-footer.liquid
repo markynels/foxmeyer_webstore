@@ -20,6 +20,16 @@
       <a href="{{ routes.root_url }}pages/shop#faq">{{ 'fms.footer.help_faq' | t }}</a>
     </nav>
   </div>
+  {%- capture policy_links -%}
+    {%- for policy in shop.policies -%}
+      {%- if policy != blank -%}
+        <a href="{{ policy.url }}">{{ policy.title }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if policy_links != blank -%}
+    <nav class="fms-footer-legal" aria-label="{{ 'fms.footer.legal_aria' | t }}">{{ policy_links }}</nav>
+  {%- endif -%}
   {%- assign copyright_fallback = 'fms.footer.copyright_fallback' | t -%}
   <p class="fms-footer-copy">{{ copyright | default: copyright_fallback }}</p>
 </footer>

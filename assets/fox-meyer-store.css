@@ -547,6 +547,10 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
 .fms-footer-links { display: flex; flex-direction: column; gap: 8px; font-family: var(--display); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: 14px; }
 .fms-footer-links a { color: var(--cream-dim); text-decoration: none; }
 .fms-footer-links a:hover { color: var(--cream); }
+.fms-footer-legal { max-width: 1180px; margin: 34px auto 0; display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 13px; }
+.fms-footer-legal a { color: var(--cream-faint); text-decoration: none; }
+.fms-footer-legal a:hover { color: var(--cream); }
+.fms-footer-legal + .fms-footer-copy { margin-top: 10px; }
 .fms-footer-copy { max-width: 1180px; margin: 34px auto 0; font-size: 13px; color: var(--cream-faint); }
 
 /* ---------------------------------------------------------------- mobile */
