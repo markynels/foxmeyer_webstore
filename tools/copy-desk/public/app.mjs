@@ -24,6 +24,7 @@ function toast(msg, ms = 3500) {
 async function load() {
   state = await api('/api/state');
   $('#staged-count').textContent = state.stagedCount;
+  $('#btn-ai-group').hidden = !state.ai?.connected;
   renderBanner();
   renderNav();
   renderRows();
@@ -38,6 +39,7 @@ function renderBanner() {
   if (!state.shopify.connected) msgs.push('Shopify not connected — FR for section settings and admin content unavailable. See tools/copy-desk/README.md.');
   else if (!state.shopify.fetchedAt) msgs.push('No Shopify data cached yet — hit "Refresh from Shopify".');
   if (state.shopify.missingScopes?.length) msgs.push('Missing API scopes for: ' + state.shopify.missingScopes.map(m => m.type).join(', '));
+  if (!state.ai?.connected) msgs.push('AI transcreation not configured — add ANTHROPIC_API_KEY to tools/copy-desk/.env for FR drafts.');
   b.hidden = msgs.length === 0;
   b.textContent = msgs.join('  ·  ');
   b.className = g.behind > 0 || g.inProgress ? 'err' : '';
@@ -102,8 +104,14 @@ function cellHtml(e, lang) {
   const current = side.stagedValue ?? side.value ?? '';
   const readonly = lang === 'en' && side.readonly;
   const stagedNote = side.stagedValue !== undefined ? ' (staged)' : '';
+  const aiBtn = lang === 'fr' && state.ai?.connected && (e.en.stagedValue ?? e.en.value)
+    ? '<button class="btn-ai" title="Generate a French transcreation of the EN text with AI — review before saving">✦ AI draft</button>'
+    : '';
   return `<div class="cell">
-    <span class="lang">${lang}${stagedNote}${readonly ? ' · read-only (edit in admin)' : ''}</span>
+    <div class="cell-head">
+      <span class="lang">${lang}${stagedNote}${readonly ? ' · read-only (edit in admin)' : ''}</span>
+      ${aiBtn}
+    </div>
     <textarea data-id="${esc(e.id)}" data-lang="${lang}" ${readonly ? 'readonly' : ''}
       data-original="${esc(current)}">${esc(current)}</textarea>
     <div class="save-strip" hidden>
@@ -146,6 +154,25 @@ function wireTextarea(ta) {
   cell.querySelector('.btn-revert').onclick = () => {
     ta.value = ta.dataset.original;
     ta.dispatchEvent(new Event('input'));
+  };
+
+  const aiBtn = cell.querySelector('.btn-ai');
+  if (aiBtn) aiBtn.onclick = async () => {
+    aiBtn.disabled = true;
+    aiBtn.textContent = 'Translating…';
+    try {
+      const res = await api('/api/translate', { id: ta.dataset.id });
+      ta.value = res.value;
+      ta.dispatchEvent(new Event('input')); // shows Save/Stage strip
+      if (res.issues?.length) {
+        issuesBox.hidden = false;
+        issuesBox.innerHTML = res.issues.map(i =>
+          `<div class="${i.severity}">${i.severity === 'error' ? '✖' : '⚠'} ${esc(i.message)}</div>`).join('');
+      }
+      toast('AI draft inserted — review, adjust, then Save/Stage.');
+    } catch (e) { toast('✖ ' + e.message, 6000); }
+    aiBtn.disabled = false;
+    aiBtn.textContent = '✦ AI draft';
   };
 
   cell.querySelector('.btn-save').onclick = async (ev, override = false) => {
@@ -194,6 +221,30 @@ $('#btn-publish').onclick = async () => {
     toast(msg, 8000);
     await load();
   } catch (e) { toast('✖ ' + e.message, 8000); }
+};
+
+$('#btn-ai-group').onclick = async () => {
+  const btn = $('#btn-ai-group');
+  const missing = state.entries.filter(e =>
+    e.group === activeGroup && e.status.includes('untranslated') && (e.en.stagedValue ?? e.en.value));
+  if (!missing.length) { toast(`No untranslated entries in “${activeGroup}”.`); return; }
+  if (!confirm(
+    `AI-transcreate ${missing.length} untranslated entr${missing.length === 1 ? 'y' : 'ies'} in “${activeGroup}”?\n\n` +
+    'Nothing goes live: git-backed results are written to locales/fr.json (review via git diff before pushing); ' +
+    'Shopify-backed results are staged (review before “Publish staged”).')) return;
+  btn.disabled = true;
+  btn.textContent = `Translating ${missing.length}…`;
+  try {
+    const res = await api('/api/translate-missing', { group: activeGroup });
+    let msg = `AI-filled ${res.applied.length} FR entr${res.applied.length === 1 ? 'y' : 'ies'} — review before commit/publish.`;
+    if (res.flagged.length) msg += '\nSkipped (lint findings — use the per-row ✦ button):\n' +
+      res.flagged.map(f => `· ${f.id}: ${f.issues.map(i => i.message).join('; ')}`).join('\n');
+    if (res.failed.length) msg += '\nFailed:\n' + res.failed.map(f => `· ${f.id}: ${f.error}`).join('\n');
+    toast(msg, 10000);
+    await load();
+  } catch (e) { toast('✖ ' + e.message, 8000); }
+  btn.disabled = false;
+  btn.textContent = '✦ AI-fill missing FR (group)';
 };
 
 $('#filter-untranslated').onchange = renderRows;

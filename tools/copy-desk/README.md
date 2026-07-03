@@ -40,6 +40,26 @@ SHOPIFY_ADMIN_TOKEN=shpat_xxx
 
 Without `.env` the tool runs in git-only mode (locale files + EN section settings).
 
+## AI transcreation (FR drafts)
+
+Generates Québec-French transcreations of the EN copy with the Anthropic API — the intended flow for **autopopulating missing FR, then reviewing it with a native French speaker before anything deploys**. It replaces reliance on Shopify's Translate & Adapt auto-translation.
+
+Setup — add to the same `tools/copy-desk/.env`:
+
+```
+ANTHROPIC_API_KEY=sk-ant-xxx
+# ANTHROPIC_MODEL=claude-opus-4-8   (optional override; this is the default)
+```
+
+Two buttons appear once the key is set:
+
+- **✦ AI draft** (per FR cell) — generates a transcreation of that entry's EN text and drops it into the FR textarea. Nothing is saved; you review/edit, then Save/Stage as usual (lint runs on save).
+- **✦ AI-fill missing FR (group)** (filter bar) — transcreates every untranslated entry in the active group and applies each through the normal save path: locale strings are written to `locales/fr.json` (review via `git diff`, nothing deploys until you commit & push), Shopify-backed copy is staged (review before "Publish staged"). Entries whose AI output trips lint are skipped and listed for manual handling.
+
+The model is briefed on the brand rules (voice à la Aesop/Kinto, « vous », `ᴹᴰ` not `®`, no "Fox Blend", exact placeholder/HTML preservation) and is shown existing FR copy as a terminology reference. Batch-applied entries are marked `"ai": true` in `data/history.jsonl`.
+
+**Review is still mandatory** — AI output is a draft. Have a native French speaker approve the `git diff` / staged set before pushing or publishing.
+
 ## Lint rules
 
 - **"Fox Blend"** anywhere → error (internal name, never consumer-facing).

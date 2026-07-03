@@ -69,6 +69,15 @@ h2.subgroup { font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
 .chip.source-outdated { background: var(--warn); }
 .chip.ok { background: var(--ok); }
 .cell { display: flex; flex-direction: column; gap: 4px; }
+.cell-head { display: flex; justify-content: space-between; align-items: center; min-height: 20px; }
+.btn-ai {
+  padding: 0 8px; font-size: 11.5px; border-radius: 10px;
+  background: #fff; border: 1px dashed var(--stage); color: var(--stage);
+}
+.btn-ai:hover { border-style: solid; border-color: var(--stage); }
+.btn-ai:disabled { opacity: .55; cursor: default; }
+#btn-ai-group { border-color: var(--stage); color: var(--stage); background: #fff; }
+#btn-ai-group:disabled { opacity: .55; cursor: default; }
 .cell textarea {
   width: 100%; font: 13px/1.45 ui-monospace, "SF Mono", Menlo, monospace;
   padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; background: #fffdf9;
