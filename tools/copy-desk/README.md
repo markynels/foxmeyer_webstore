@@ -25,10 +25,12 @@ Requires Node ≥ 20. No npm install — zero dependencies.
 
 ## Connecting Shopify (needed for FR section settings + admin content)
 
-1. Shopify admin → Settings → Apps and sales channels → Develop apps → Create app ("Copy Desk").
-2. Admin API scopes: `read_translations`, `write_translations`, `read_products`, `write_products`, `read_content`, `write_content`, `read_themes`, `read_online_store_pages`, `write_legal_policies`.
-3. Install the app, reveal the Admin API access token (`shpat_…`).
-4. Create `tools/copy-desk/.env` (gitignored):
+Two ways to get an Admin API token, depending on what your store's admin offers.
+
+### A. Legacy custom app (if you still have "Develop apps")
+1. Shopify admin → Settings → Apps and sales channels → **Develop apps** → Create app ("Copy Desk").
+2. Configure Admin API scopes (see list below) → **Install app** → reveal the Admin API access token (`shpat_…`).
+3. Put it straight in `.env`:
 
 ```
 SHOPIFY_STORE=fox-meyer.myshopify.com
@@ -36,7 +38,31 @@ SHOPIFY_ADMIN_TOKEN=shpat_xxx
 # SHOPIFY_API_VERSION=2026-01   (optional override)
 ```
 
-5. In the dashboard, hit **Refresh from Shopify**. Missing scopes are reported per resource type.
+4. Hit **Refresh from Shopify**.
+
+### B. Dev-dashboard app + one-time localhost OAuth (no tunnel)
+Newer stores route all apps through the **dev dashboard**, which issues a Client ID + Client secret instead of a ready-made token — and its "Install" flow wants a hosted App URL. You do **not** need to host anything: Copy Desk can complete the OAuth against `localhost` and capture the token itself.
+
+1. In the dev-dashboard app, set:
+   - **Scopes**: `read_translations, write_translations, read_products, read_content, read_online_store_pages, read_themes, write_legal_policies`
+   - **App URL**: `http://localhost:4477` (any value; unused by this flow)
+   - **Allowed redirection URL(s)**: `http://localhost:4477/shopify/callback`  ← **required, must match exactly**
+   - Release the version so the config is live.
+2. Copy the app's **Client ID** and **Client secret** into `.env`:
+
+```
+SHOPIFY_STORE=fox-meyer.myshopify.com
+SHOPIFY_API_KEY=<Client ID>
+SHOPIFY_API_SECRET=<Client secret — the shpss_… value>
+# SHOPIFY_API_VERSION=2026-01   (optional override)
+# SHOPIFY_ADMIN_TOKEN is written here automatically after you connect.
+```
+
+3. Restart the server, then click **Connect Shopify** in the dashboard (or open `http://localhost:4477/shopify/install`). Approve on Shopify; it redirects back to localhost, Copy Desk exchanges the code for an Admin API token and writes `SHOPIFY_ADMIN_TOKEN` into `.env` (live immediately, no restart).
+4. Hit **Refresh from Shopify**.
+
+### Admin API scopes (both methods)
+`read_translations`, `write_translations`, `read_products`, `read_content`, `read_online_store_pages`, `read_themes`, `write_legal_policies`. Missing scopes are reported per resource type after Refresh.
 
 Without `.env` the tool runs in git-only mode (locale files + EN section settings).
 

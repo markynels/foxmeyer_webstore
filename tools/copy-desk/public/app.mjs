@@ -25,6 +25,7 @@ async function load() {
   state = await api('/api/state');
   $('#staged-count').textContent = state.stagedCount;
   $('#btn-ai-group').hidden = !state.ai?.connected;
+  $('#btn-connect').hidden = !state.shopify.canConnect;
   renderBanner();
   renderNav();
   renderRows();
@@ -36,7 +37,11 @@ function renderBanner() {
   const msgs = [];
   if (g.behind > 0) msgs.push(`⚠ origin/${g.branch} is ${g.behind} commit(s) ahead (customizer auto-commit?). Pull before editing theme copy — git-backed saves are blocked.`);
   if (g.inProgress) msgs.push('⚠ A git merge/rebase is in progress.');
-  if (!state.shopify.connected) msgs.push('Shopify not connected — FR for section settings and admin content unavailable. See tools/copy-desk/README.md.');
+  if (!state.shopify.connected) {
+    msgs.push(state.shopify.canConnect
+      ? 'Shopify not connected — click “Connect Shopify” above to authorize (opens Shopify, comes back to localhost — no tunnel).'
+      : 'Shopify not connected — FR for section settings and admin content unavailable. See tools/copy-desk/README.md.');
+  }
   else if (!state.shopify.fetchedAt) msgs.push('No Shopify data cached yet — hit "Refresh from Shopify".');
   if (state.shopify.missingScopes?.length) msgs.push('Missing API scopes for: ' + state.shopify.missingScopes.map(m => m.type).join(', '));
   if (!state.ai?.connected) msgs.push('AI transcreation not configured — add ANTHROPIC_API_KEY to tools/copy-desk/.env for FR drafts.');
@@ -198,6 +203,8 @@ function wireTextarea(ta) {
 }
 
 // ---- top-level actions ----
+$('#btn-connect').onclick = () => { window.location.href = '/shopify/install'; };
+
 $('#btn-refresh').onclick = async () => {
   const btn = $('#btn-refresh');
   btn.disabled = true; btn.textContent = 'Refreshing…';

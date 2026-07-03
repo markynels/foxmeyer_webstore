@@ -17,16 +17,39 @@ import { makeAdminAdapter } from './lib/adapter-admin.mjs';
 import { makeEntries } from './lib/entries.mjs';
 import { toCsv, toJson, toXliff } from './lib/export.mjs';
 import { makeTranslator, styleExamples } from './lib/translate.mjs';
+import { makeShopifyOAuth } from './lib/shopify-oauth.mjs';
 
 const TOOL_DIR = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(TOOL_DIR, '..', '..');
 const DATA_DIR = join(TOOL_DIR, 'data');
-const PORT = 4477;
+const ENV_FILE = join(TOOL_DIR, '.env');
+const PORT = Number(process.env.PORT) || 4477;
 
-const env = loadEnv(TOOL_DIR);
+let env = loadEnv(TOOL_DIR);
 const git = makeGit(REPO_ROOT);
-const shopify = makeShopify(env);
+let shopify = makeShopify(env);            // reassigned after OAuth writes a token
 const translator = makeTranslator(env);
+const oauth = makeShopifyOAuth({
+  store: env.SHOPIFY_STORE,
+  apiKey: env.SHOPIFY_API_KEY,
+  apiSecret: env.SHOPIFY_API_SECRET,
+  redirectUri: `http://localhost:${PORT}/shopify/callback`,
+});
+
+// Upsert a single KEY=value line in .env (atomic tmp+rename), then reload the
+// in-memory env + Shopify client so the new token takes effect without a restart.
+function saveEnvVar(key, value) {
+  let text = '';
+  try { text = readFileSync(ENV_FILE, 'utf8'); } catch { /* new file */ }
+  const line = `${key}=${value}`;
+  const re = new RegExp(`^${key}=.*$`, 'm');
+  text = re.test(text) ? text.replace(re, line) : (text.replace(/\n?$/, '\n') + line + '\n');
+  const tmp = ENV_FILE + '.tmp';
+  writeFileSync(tmp, text);
+  renameSync(tmp, ENV_FILE);
+  env = loadEnv(TOOL_DIR);
+  shopify = makeShopify(env);
+}
 const staged = makeStaged(DATA_DIR);
 const history = makeHistory(DATA_DIR);
 const localeAdapter = makeLocaleAdapter(REPO_ROOT);
@@ -59,6 +82,18 @@ function assertGitWritable(status) {
 }
 
 function httpError(code, message) { const e = new Error(message); e.code = code; return e; }
+
+function oauthResultPage(ok, detail = '') {
+  const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const body = ok
+    ? `<h1>✓ Shopify connected</h1><p>The Admin API token was saved to <code>.env</code> and is live now — no restart needed.</p>
+       <p>Close this tab, return to Copy Desk, and hit <b>Refresh from Shopify</b>.</p>`
+    : `<h1>✗ Connection failed</h1><p>${esc(detail)}</p>
+       <p>Fix the issue and start again from <b>Connect Shopify</b> in Copy Desk.</p>`;
+  return `<!doctype html><meta charset="utf-8"><title>Copy Desk · Shopify</title>
+    <style>body{font:15px/1.5 -apple-system,sans-serif;max-width:640px;margin:15vh auto;padding:0 24px;color:#221a24}
+    h1{font-size:20px}code{background:#f0e9dd;padding:1px 5px;border-radius:4px}</style>${body}`;
+}
 
 async function readBody(req) {
   let raw = '';
@@ -121,6 +156,7 @@ const routes = {
         store: shopify.store || null,
         fetchedAt: cache?.fetchedAt || null,
         missingScopes: cache?.missingScopes || [],
+        canConnect: oauth.configured && !shopify.connected,
       },
       ai: { connected: translator.connected, model: translator.connected ? translator.model : null },
       stagedCount: Object.keys(staged.all()).length,
@@ -137,6 +173,30 @@ const routes = {
   async 'POST /api/git-fetch'() {
     await git.fetch();
     return await git.status();
+  },
+
+  // ---- Shopify OAuth over localhost (dev-dashboard app, no tunnel) ----------
+  // Step 1: bounce the browser to Shopify's approval screen.
+  async 'GET /shopify/install'() {
+    if (!oauth.configured) {
+      throw httpError(400, 'Set SHOPIFY_STORE, SHOPIFY_API_KEY and SHOPIFY_API_SECRET in tools/copy-desk/.env first — see README.md.');
+    }
+    return { _redirect: oauth.authorizeUrl() };
+  },
+
+  // Step 2: Shopify redirects back here with a code; verify, exchange, persist.
+  async 'GET /shopify/callback'(req, url) {
+    if (url.searchParams.get('error')) {
+      return { _html: oauthResultPage(false, url.searchParams.get('error_description') || url.searchParams.get('error')) };
+    }
+    try {
+      const code = oauth.verify(url.search);
+      const token = await oauth.exchange(code);
+      saveEnvVar('SHOPIFY_ADMIN_TOKEN', token); // reloads the in-memory Shopify client
+      return { _html: oauthResultPage(true) };
+    } catch (e) {
+      return { _html: oauthResultPage(false, e.message) };
+    }
   },
 
   async 'POST /api/edit'(req) {
@@ -293,7 +353,13 @@ const server = createServer(async (req, res) => {
     const handler = routes[`${req.method} ${url.pathname}`];
     if (handler) {
       const result = await handler(req, url);
-      if (result?._raw !== undefined) {
+      if (result?._redirect !== undefined) {
+        res.writeHead(302, { Location: result._redirect });
+        res.end();
+      } else if (result?._html !== undefined) {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(result._html);
+      } else if (result?._raw !== undefined) {
         res.writeHead(200, {
           'Content-Type': result.type,
           'Content-Disposition': `attachment; filename="${result.filename}"`,
@@ -324,7 +390,9 @@ server.listen(PORT, '127.0.0.1', () => {
   console.log(`Repo: ${REPO_ROOT}`);
   console.log(shopify.connected
     ? `Shopify: ${shopify.store} (API ${shopify.version})`
-    : 'Shopify: not configured (git-only mode) — see README.md to connect.');
+    : oauth.configured
+      ? `Shopify: not connected — open http://localhost:${PORT}/shopify/install to authorize (no tunnel needed).`
+      : 'Shopify: not configured (git-only mode) — see README.md to connect.');
   console.log(translator.connected
     ? `AI transcreation: ${translator.model}`
     : 'AI transcreation: not configured — add ANTHROPIC_API_KEY to .env to enable FR drafts.');
