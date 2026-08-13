@@ -200,6 +200,23 @@ via Settings → Files on restart.
 
 All under `https://cdn.shopify.com/s/files/1/0793/4112/5864/files/`.
 
+## 8b. Installed apps
+
+The Admin API denied `appInstallations` to this token; list confirmed manually
+from Settings → Apps on Aug 13, 2026.
+
+| App | What it is | On restart |
+|---|---|---|
+| **copy-desk** | Custom app backing [`tools/copy-desk`](tools/copy-desk/README.md) — FR translations + admin content | **Recreate.** Develop apps → create app → Admin API scopes for products/content/translations → put the new token in `tools/copy-desk/.env` (gitignored) |
+| **Translate & Adapt** | Shopify's official (free) translation app — holds the FR translations | Reinstall; FR strings are re-published from Copy Desk / `locales/fr.json` |
+| **Theme Access** | Shopify's app issuing theme passwords for CLI/CI | Reinstall only if you need a theme password rather than interactive CLI login |
+| **Shopify Claude Connector App** | Claude ↔ Shopify connector | Reconnect if still using Claude against the store |
+| **Claude MCP — Fox Meyer** | Claude MCP connection to this store | Same |
+| **Messaging** | Shopify Inbox / messaging | Optional — unused at pause (0 orders) |
+
+None hold data that isn't captured elsewhere in this file; all are
+re-installable. The only one with bespoke setup is **copy-desk** (its token).
+
 ## 9. Discrepancies found at snapshot time
 
 Recorded as-is; none were changed during this snapshot.
