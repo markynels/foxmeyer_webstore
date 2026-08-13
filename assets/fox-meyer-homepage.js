@@ -11,8 +11,65 @@
   var fmPage   = document.querySelector('.fm-page');
   var lastBgKey = '';
 
+  /* ---------- loader reveal ---------- */
+  /* The loader is a full-screen cover, so the page is unusable until reveal()
+     runs. Nothing below this point may be able to prevent it: a blocked CDN, a
+     WebGL failure or a hung texture used to abort this script mid-way and leave
+     the site stuck on the pulsing logo. */
+  var revealed = false;
+  function reveal() {
+    if (revealed) return;
+    revealed = true;
+    if (loader) {
+      loader.classList.add('done');
+      setTimeout(function () { if (loader && loader.parentNode) loader.remove(); }, 800);
+    }
+  }
+  /* Watchdogs — whatever happens to the 3D scene, the page comes up. */
+  window.addEventListener('load', function () { setTimeout(reveal, 1500); });
+  setTimeout(reveal, 6000);
+
+  /* GSAP panel reveals + hero parallax. Declared here (hoisted) because the
+     fallback path runs it before the 3D scene is ever set up; GSAP is optional
+     too — without it the panels are simply visible from the start. */
+  var gsapDone = false;
+  function gsapReveals() {
+    if (gsapDone || reduced || !window.gsap || !window.ScrollTrigger) return;
+    gsapDone = true;
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.to('#fm-hero .fm-logo-hero, #fm-hero .fm-h1, #fm-hero .fm-hero-sub', {
+      opacity: 0, y: -40, ease: 'none',
+      scrollTrigger: { trigger: '#fm-hero', start: 'top top', end: '70% top', scrub: true }
+    });
+    gsap.utils.toArray('.fm-reveal').forEach(function (p) {
+      gsap.from(p, {
+        opacity: 0, y: 46, duration: 0.9, ease: 'power2.out',
+        scrollTrigger: { trigger: p, start: 'top 80%' }
+      });
+    });
+  }
+
+  /* Flat fallback: no canvas, no can, every other part of the page works. */
+  function noThreeD() {
+    if (canvas && canvas.parentNode) canvas.remove();
+    if (fmPage) fmPage.classList.add('fm-no-3d');
+    gsapReveals();
+    reveal();
+  }
+
   /* ---------- renderer / scene ---------- */
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  /* THREE is missing when the CDN is blocked; the constructor throws when the
+     browser can't hand out a WebGL context at all (hardware acceleration off,
+     GPU context limit reached, software rasteriser unavailable, old device). */
+  if (!window.THREE) { noThreeD(); return; }
+
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  } catch (err) {
+    noThreeD();
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputEncoding     = THREE.sRGBEncoding;
   renderer.toneMapping        = THREE.ACESFilmicToneMapping;
@@ -94,12 +151,6 @@
   var canA = null, canB = null;
   var loadedA = false, loadedB = false;
 
-  function reveal() {
-    if (loader) {
-      loader.classList.add('done');
-      setTimeout(function () { if (loader) loader.remove(); }, 800);
-    }
-  }
   function maybeReveal() { if (loadedA && loadedB) reveal(); }
 
   var texLoader = new THREE.TextureLoader();
@@ -215,27 +266,26 @@
   window.addEventListener('resize', frame, { passive: true });
   window.addEventListener('scroll', measure, { passive: true });
 
-  /* GSAP panel reveals + hero parallax */
-  if (!reduced && window.gsap && window.ScrollTrigger) {
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.to('#fm-hero .fm-logo-hero, #fm-hero .fm-h1, #fm-hero .fm-hero-sub', {
-      opacity: 0, y: -40, ease: 'none',
-      scrollTrigger: { trigger: '#fm-hero', start: 'top top', end: '70% top', scrub: true }
-    });
-    gsap.utils.toArray('.fm-reveal').forEach(function (p) {
-      gsap.from(p, {
-        opacity: 0, y: 46, duration: 0.9, ease: 'power2.out',
-        scrollTrigger: { trigger: p, start: 'top 80%' }
-      });
-    });
-  }
+  gsapReveals();
 
   /* ---------- render loop ---------- */
   var clock   = new THREE.Clock();
   var running = true;
+  var lost    = false;
   document.addEventListener('visibilitychange', function () { running = !document.hidden; });
 
+  /* Mobile GPUs drop contexts under memory pressure. Without this the loop
+     keeps drawing into a dead context and a frozen can sits over the page. */
+  if (canvas) {
+    canvas.addEventListener('webglcontextlost', function (e) {
+      e.preventDefault();
+      lost = true;
+      noThreeD();
+    }, false);
+  }
+
   function tick() {
+    if (lost) return;
     requestAnimationFrame(tick);
     if (!running) { clock.getDelta(); return; }
     var dt = Math.min(clock.getDelta(), 0.05);

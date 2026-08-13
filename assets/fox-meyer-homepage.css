@@ -56,6 +56,12 @@ html, body { margin: 0; padding: 0; background: var(--plum-deepest); }
   z-index: 1; pointer-events: none;
 }
 
+/* No WebGL — blocked script, hardware acceleration off, or a lost GPU context.
+   The page runs flat: the stage is gone, so close the gap the hero reserved for
+   the can (higher specificity than the mobile override on .fm-hero-spacer). */
+.fm-page.fm-no-3d .fm-stage { display: none; }
+.fm-page.fm-no-3d .fm-hero-spacer { height: 0; }
+
 /* loader */
 .fm-loader {
   position: fixed; inset: 0; z-index: 50; background: var(--plum-deep);
